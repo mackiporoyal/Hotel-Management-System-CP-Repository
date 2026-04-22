@@ -16,8 +16,9 @@ public class Menu {
 
 	public void displayMenu() {
 		System.out.println("\t\t\t\t___________Choose what you wanna to do___________");
+		
 		for(Menu.eMenu listMenu: Menu.eMenu.values()) {
-    		System.out.println("\t\t\t\t"+listMenu.option);
+    		System.out.println("\t\t\t\t\t  "+listMenu.option);
     	}
 	}	
 }

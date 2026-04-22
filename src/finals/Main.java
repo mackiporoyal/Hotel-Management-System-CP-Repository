@@ -5,6 +5,7 @@ public class Main {
 		Menu menu = new Menu();
 		Scanner scan = new Scanner(System.in);
 		
+		System.out.println("\t\t\t\t_________________________________________________");
 		System.out.println("\t\t\t\t_________________WElCOME TO HMCS_________________");
 		menu.displayMenu();
 		System.out.print("\t\t\t\tENTER HERE: ");
