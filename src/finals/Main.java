@@ -20,6 +20,7 @@ public class Main {
 		//etc option
 		default: System.out.println("Enter + //logic to count how many case/length of enum values// only!");
 		}
-		scan.close();
+		scan.close(); // elo
+		
 	}
 }
