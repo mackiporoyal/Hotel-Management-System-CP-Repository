@@ -6,6 +6,9 @@ public class Main {
 		Menu menu = new Menu();
 		Scanner scan = new Scanner(System.in);
 		TextFileLogic test = new TextFileLogic();
+		RoomAvailability display = new RoomAvailability();
+		
+		display.displayRoom();
 		
 		System.out.println("\t\t\t\t==================================================");
 		System.out.println("\t\t\t\t____WELCOME TO HOTEL MANAGEMENT CENTRAL SYSTEM____");

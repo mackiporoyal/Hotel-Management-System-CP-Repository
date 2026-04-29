@@ -6,15 +6,13 @@ public class Create_Booking {
 
 	private int adultGuest;
 	private int childGuest;
-	private String name;
-	public Create_Booking(int newAdult, int newChild, String newName) {
+	public Create_Booking(int newAdult, int newChild) {
 		this.adultGuest = newAdult;
 		this.childGuest = newChild;
-		this.name = newName;
 	}
 	public void savetoFile()
 	{
-		String bookingDets = String.format("Adults: %d, Children: %d%n, Name: %s", adultGuest, childGuest, name);
+		String bookingDets = String.format("Adults: %d, Children: %d%n", adultGuest, childGuest);
 		
 		try 
 		{

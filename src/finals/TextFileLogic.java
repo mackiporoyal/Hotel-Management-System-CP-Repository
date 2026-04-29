@@ -17,16 +17,10 @@ public class TextFileLogic {
 		int childnum = scan.nextInt();
 		
 		
-		// room availability here
-		
-		System.out.println("Enter Guess Name: ");
-		String name = scan.nextLine();
-		
-		
 		try
 		{
-			Create_Booking bookDets = new Create_Booking(adultnum, childnum, name);
-			String bookdata = String.format("%d|%d%n|%s", adultnum, childnum, name);
+			Create_Booking bookDets = new Create_Booking(adultnum, childnum);
+			String bookdata = String.format("%d|%d\n", adultnum, childnum);
 			Files.write(storagePath, bookdata.getBytes(),java.nio.file.StandardOpenOption.CREATE,java.nio.file.StandardOpenOption.APPEND);
 			
 			System.out.println("Booking Saved!");
