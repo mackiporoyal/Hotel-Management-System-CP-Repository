@@ -5,7 +5,7 @@ public class Main {
 
 		Menu menu = new Menu();
 		Scanner scan = new Scanner(System.in);
-		TextFileLogic test = new TextFileLogic();
+		TextFileLogic.setInfo test = new TextFileLogic.setInfo();
 		RoomAvailability display = new RoomAvailability();
 		
 		display.displayRoom();
@@ -19,9 +19,10 @@ public class Main {
 		scan.nextLine();
 		
 		switch(chooseMenu) {
-		case 1: test.d();;break;//goes to create booking class
-		case 2: System.out.println("2");break;//goes to search booking class
-		//etc option
+		case 1: test.setGuestInfo();
+		break;
+		case 2: System.out.println("2");
+		break;
 		default: System.out.println("Enter + //logic to count how many case/length of enum values// only!");
 		}
 		scan.close(); // 
