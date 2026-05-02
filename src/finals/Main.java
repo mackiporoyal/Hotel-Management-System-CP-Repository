@@ -5,8 +5,8 @@ public class Main {
 
 		Menu menu = new Menu();
 		Scanner scan = new Scanner(System.in);
-		TextFileLogic.setInfo test = new TextFileLogic.setInfo();
-		RoomAvailability display = new RoomAvailability();
+		Create_Booking test = new Create_Booking();
+		RoomAvailability roomAvailability = new RoomAvailability();
 		
 		System.out.println("\t\t\t\t===================================================");
 		System.out.println("\t\t\t\t     WELCOME TO HOTEL MANAGEMENT CENTRAL SYSTEM     ");
@@ -17,16 +17,26 @@ public class Main {
 		scan.nextLine();
 		
 		switch(chooseMenu) {
-		case 1: test.setGuestInfo();
+		case 1:
+			System.out.println("\t\t\t\t________________Create Booking_____________________");
+			System.out.println("\t\t\t\tHow many adults? : ");
+			int adultNum = scan.nextInt();
+	
+			System.out.println("\t\t\t\tHow many Children? : ");
+			int childNum = scan.nextInt();
+			
+			test.writeDatabase(adultNum, childNum);
+		
+		
 		break;
 		case 2: System.out.println("2");
 		break;
-		case 3: display.displayRoom();
+		case 3:	roomAvailability.displayRoom.DisplayRoom();
 		break;
 		
 		default: System.out.println("Enter + //logic to count how many case/length of enum values// only!");
 		}
-		scan.close(); // 
+		scan.close(); 
 		
 	}
 }

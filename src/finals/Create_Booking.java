@@ -1,28 +1,27 @@
 package finals;
-import java.nio.file.*;
-import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.FileWriter;
 import java.io.IOException;
 public class Create_Booking {
 
 	private int adultGuest;
 	private int childGuest;
-	public Create_Booking(int newAdult, int newChild) {
-		this.adultGuest = newAdult;
-		this.childGuest = newChild;
+	Path storageRPath = Paths.get("HotelDatabase.txt");
+	Path absolutePath = storageRPath.toAbsolutePath();
+	public void writeDatabase(int adultGuest, int childGuest) {
+		this.adultGuest = adultGuest;
+		this.childGuest = childGuest;
+	try {
+		FileWriter writer = new FileWriter(storageRPath.toString(), true);
+		String toDatabase = "00001" + "|" + this.adultGuest + "|" + this.childGuest + "\n";
+		writer.write(toDatabase);
+		writer.flush();
+		writer.close();
 	}
-	public void savetoFile()
-	{
-		String bookingDets = String.format("Adults: %d, Children: %d%n", adultGuest, childGuest);
-		
-		try 
-		{
-			Files.write(Paths.get("booking.txt"),bookingDets.getBytes(),java.nio.file.StandardOpenOption.CREATE,java.nio.file.StandardOpenOption.APPEND);
-			System.out.println("Booking saved successfully!");
-
-		}
-		catch (IOException e)
-		{
-			System.out.println("Error while saving booking" + e.getMessage());
-		}
+	
+	catch (IOException e) {
+		System.err.println("Try");
 	}
+}
 }
