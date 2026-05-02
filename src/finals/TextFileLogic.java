@@ -11,10 +11,12 @@ public class TextFileLogic {
 		public void setGuestInfo() {
 			Scanner scan = new Scanner(System.in);
 	
-			System.out.println("How many adults? : ");
+			System.out.println("\t\t\t\t_________________Booking________________");
+			
+			System.out.println("\t\t\t\tHow many adults? : ");
 			int adultnum = scan.nextInt();
 	
-			System.out.println("How many Children? : ");
+			System.out.println("\t\t\t\tHow many Children? : ");
 			int childnum = scan.nextInt();
 			
 			
@@ -24,7 +26,7 @@ public class TextFileLogic {
 				String bookdata = String.format("%d|%d\n", adultnum, childnum);
 				Files.write(storagePath, bookdata.getBytes(),java.nio.file.StandardOpenOption.CREATE,java.nio.file.StandardOpenOption.APPEND);
 				
-				System.out.println("Booking Saved!");
+				System.out.println("\t\t\t\tBooking Saved!");
 				
 				
 			}
