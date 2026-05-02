@@ -19,7 +19,7 @@ public class Menu {
 	}
 
 	public void displayMenu() {
-		System.out.println("\t\t\t\t__________________Select Option___________________");
+		System.out.println("\t\t\t\t___________________Select Option___________________");
 		int j = 1;
 		for(Menu.eMenu listMenu: Menu.eMenu.values()) {
     		System.out.println("\t\t\t\t\t  "+ (j++) +". "+listMenu.option);

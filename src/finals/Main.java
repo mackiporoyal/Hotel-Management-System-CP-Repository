@@ -8,9 +8,9 @@ public class Main {
 		TextFileLogic.setInfo test = new TextFileLogic.setInfo();
 		RoomAvailability display = new RoomAvailability();
 		
-		System.out.println("\t\t\t\t==================================================");
-		System.out.println("\t\t\t\t____WELCOME TO HOTEL MANAGEMENT CENTRAL SYSTEM____");
-		System.out.println();
+		System.out.println("\t\t\t\t===================================================");
+		System.out.println("\t\t\t\t     WELCOME TO HOTEL MANAGEMENT CENTRAL SYSTEM     ");
+		System.out.println("\t\t\t\t===================================================");
 		menu.displayMenu();
 		System.out.print("\t\t\t\tENTER HERE: ");
 		int chooseMenu = scan.nextInt();

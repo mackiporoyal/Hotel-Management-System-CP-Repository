@@ -11,7 +11,7 @@ public class TextFileLogic {
 		public void setGuestInfo() {
 			Scanner scan = new Scanner(System.in);
 	
-			System.out.println("\t\t\t\t_________________Booking________________");
+			System.out.println("\t\t\t\t__________________Booking________________");
 			
 			System.out.println("\t\t\t\tHow many adults? : ");
 			int adultnum = scan.nextInt();
