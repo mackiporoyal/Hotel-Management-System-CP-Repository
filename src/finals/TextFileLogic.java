@@ -34,6 +34,10 @@ public class TextFileLogic {
 			{
 				System.err.println("Error Found while saving: " + e.getMessage());
 			}
+//			Main Return = new Main();
+//			System.out.println();
+//			Return.main(null);
+			// loop if you want it to instantly return
 		}
 	}
 }
