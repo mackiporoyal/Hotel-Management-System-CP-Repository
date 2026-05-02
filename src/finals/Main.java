@@ -8,8 +8,6 @@ public class Main {
 		TextFileLogic.setInfo test = new TextFileLogic.setInfo();
 		RoomAvailability display = new RoomAvailability();
 		
-		display.displayRoom();
-		
 		System.out.println("\t\t\t\t==================================================");
 		System.out.println("\t\t\t\t____WELCOME TO HOTEL MANAGEMENT CENTRAL SYSTEM____");
 		System.out.println();
@@ -23,6 +21,9 @@ public class Main {
 		break;
 		case 2: System.out.println("2");
 		break;
+		case 3: display.displayRoom();
+		break;
+		
 		default: System.out.println("Enter + //logic to count how many case/length of enum values// only!");
 		}
 		scan.close(); // 

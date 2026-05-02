@@ -13,9 +13,11 @@ public class RoomAvailability {
 					};
 	
 	public void displayRoom() {
+		
+		System.out.println("\t__________________________________________Room Availability__________________________________________");
 		for (int z = 0; z<4; z++) {
 			for(int x = 0; x<8; x++){
-				System.out.print(rooms[z][x]);
+				System.out.print("\t  " + rooms[z][x]);
 			}
 			System.out.println();
 		}
