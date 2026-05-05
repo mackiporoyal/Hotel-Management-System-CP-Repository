@@ -1,6 +1,8 @@
 package finals;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.io.FileWriter;
 import java.io.IOException;
 public class Create_Booking {
@@ -13,6 +15,10 @@ public class Create_Booking {
 		this.adultGuest = adultGuest;
 		this.childGuest = childGuest;
 	try {
+		List<String> allLines = Files.readAllLines(absolutePath);
+        String lastLine = allLines.get(allLines.size() - 1);
+        System.out.println(lastLine);
+  
 		FileWriter writer = new FileWriter(storageRPath.toString(), true);
 		String toDatabase = "00001" + "|" + this.adultGuest + "|" + this.childGuest + "\n";
 		writer.write(toDatabase);
