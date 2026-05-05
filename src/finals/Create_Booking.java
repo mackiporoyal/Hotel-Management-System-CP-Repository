@@ -17,10 +17,12 @@ public class Create_Booking {
 	try {
 		List<String> allLines = Files.readAllLines(absolutePath);
         String lastLine = allLines.get(allLines.size() - 1);
-        System.out.println(lastLine);
-  
+        String[] bookingNumber = lastLine.split("\\|", - 1);
+        int num = Integer.parseInt(bookingNumber[0]);		
+        bookingNumber[0] = Integer.toString(++num);
+        
 		FileWriter writer = new FileWriter(storageRPath.toString(), true);
-		String toDatabase = "00001" + "|" + this.adultGuest + "|" + this.childGuest + "\n";
+		String toDatabase = bookingNumber[0] + "|" + this.adultGuest + "|" + this.childGuest + "\n";
 		writer.write(toDatabase);
 		writer.flush();
 		writer.close();
