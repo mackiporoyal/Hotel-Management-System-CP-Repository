@@ -19,13 +19,37 @@ public class Main {
 		switch(chooseMenu) {
 		case 1:
 			System.out.println("\t\t\t\t________________Create Booking_____________________");
-			System.out.println("\t\t\t\tHow many adults? : ");
-			int adultNum = scan.nextInt();
+			System.out.print("\t\t\t\tHow many adults? : ");
+			int totalAdult = scan.nextInt();
 	
-			System.out.println("\t\t\t\tHow many Children? : ");
-			int childNum = scan.nextInt();
+			System.out.print("\t\t\t\tHow many children? : ");
+			int totalChild = scan.nextInt();
 			
-			test.writeDatabase(adultNum, childNum);
+			System.out.print("\t\t\t\tDate of Check In : ");
+			int timeIn = scan.nextInt();
+			
+			System.out.print("\t\t\t\tDate of Check Out : ");
+			int timeOut = scan.nextInt();
+			
+			scan.nextLine();
+			
+			System.out.print("\t\t\t\tChoose a Room Type : ");
+			String roomType = scan.nextLine();
+			
+			System.out.print("\t\t\t\tEnter adult guests' names : ");
+			String adultNames = scan.nextLine();
+				
+			System.out.print("\t\t\t\tEnter child guests' names : ");
+			String childNames = scan.nextLine();
+			
+			System.out.print("\t\t\t\tHow many Pool Passes? : ");
+			int swimPasses = scan.nextInt();
+			
+			System.out.print("\t\t\t\tHow many Buffet Passes? : ");
+			int buffetPasses = scan.nextInt();
+			
+			
+			test.writeDatabase(timeIn, timeOut, roomType, adultNames, childNames, totalAdult, totalChild, swimPasses, buffetPasses);
 		
 		
 		break;
