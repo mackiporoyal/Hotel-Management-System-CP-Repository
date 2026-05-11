@@ -57,7 +57,7 @@ public class Main {
 		break;
 		case 3:	roomAvailability.displayRoom.DisplayRoom();
 		break;
-		
+		//
 		default: System.out.println("Enter + //logic to count how many case/length of enum values// only!");
 		}
 		scan.close(); 
