@@ -1,143 +1,87 @@
 package finals;
-import java.util.Scanner;
-import java.io.*;
-import java.util.List;
+import java.io.BufferedReader;
 import java.util.ArrayList;
-
+import java.io.*;
 
 public class UpdateStayBilling {
-	public static void main(String[]args)
+	public void UpdateStayBill(String bookingnum, int indexarray, String choice)
 	{
-	Scanner s = new Scanner(System.in);
-	
-	
-	// where to enter the booking number so that it can find it within the files - charlie
-	System.out.println("\t\t\t\t_________________Update Stay and Billing_________________");
-	System.out.print("\t\t\t\t Choose booking number: ");
-	String bookNum = s.nextLine().trim();
-	
-	String [] data = null;
-	try
-	{
-		BufferedReader buffread = new BufferedReader(new FileReader("HotelDatabase.txt"));
-		String line;
-		while((line = buffread.readLine()) != null) {
-			String [] part = line.split("\\|", -1);
-			if (part.length > 0 && part[0].trim().equals(bookNum))
+		String [] forecord; // Found Record, thats what it means
+		String pathfile = "HotelDatabase.txt";
+		BufferedReader buffre = null;
+		
+		try {
+		
+		buffre = new BufferedReader(new FileReader(pathfile));
+		String l;
+		while ((l = buffre.readLine())!= null)
+		{
+			String[] split = l.split("\\|");
+			if (split.length > 0 && split[0].trim().equals(bookingnum.trim()));
 			{
-				data  = part;
+				forecord = split;
 				break;
 			}
 		}
-		buffread.close();
+		buffre.close();
 	}
-	catch (Exception e)
-	{
-		System.out.println("Error while reading file");
-		return;
+		catch(Exception e)
+		{
+			System.err.println(e);
+		}
+		
+		BufferedWriter buffwrite = null;
+//		forecord = applyChange(forecord, indexarray, choice);
+		
+		
+		
+		
+		
+		
+		
 	}
-	if (data == null)
-	{
-		System.out.println("booking number not found.");
-		return;
-	}
-	// the list
-	System.out.println("\nBooking #   | Date In   | Date Out   | Room Type   | Adult Names   | Child Name   | Total Adult   | Total Child  | Swim Pass   | Buffet Pass    ");
-	System.out.println("____________________________________________________________________________________________________________________________________________________\n");
-	 System.out.printf("%-9s | %-7s | %-8s | %-9s | %-11s | %-11s | %-11s | %-11s | %-9s | %s\n", data);
-	 System.out.println("\n____________________________________________________________________________________________________________________________________________________");
-	
-	 // the menu
-     System.out.println("\n\t\t\t\tChoose what to change:");
-     System.out.println("\t\t1. Booking Number");
-     System.out.println("\t\t2. Date In");
-     System.out.println("\t\t3. Date Out");
-     System.out.println("\t\t4. Room Type");
-     System.out.println("\t\t5. Adult Names");
-     System.out.println("\t\t6. Child Names");
-     System.out.println("\t\t7. Total Adult");
-     System.out.println("\t\t8. Total Child");
-     System.out.println("\t\t9. Swim Passes");
-     System.out.println("\t\t10. Buffet Passes");
-     System.out.print("\t\tEnter selected number 1 - 10: ");
-     int num = Integer.parseInt(s.nextLine()) - 1;
-     
-     String [] headers = {"Booking number", "Date In", "Date Out", "Room Type", "Adult Names", "Child Names", "Total Adult", "Total Child", "Swim Passes", "Buffet Passes"};
-     System.out.println("Enter new value for " + headers[num] + ": ");
-     String newValue = s.nextLine().trim();
-     
-     updateBook(bookNum, newValue, num);
-     
-     System.out.println("\n\n\t\t\t\t ________ Successful Update ________");
-     // system for reading the update and updating files -charlie
-     
-     try {
-     BufferedReader buffread = new BufferedReader(new FileReader("HotelDatabase.txt"));
-     String line;
-     while ((line = buffread.readLine()) != null)
-     {
-    	 String[] parts = line.split("\\|", -1);
-    	 if (parts.length > 0 && parts[0].trim().equals(bookNum))
-    	 {
-    		 System.out.printf("%-9s | %-7s | %-8s | %-9s | %-11s | %-11s | %-11s | %-11s | %-9s | %s\\n", parts);
-    		 break;
-    	 }
-     }
-     buffread.close();
-	}
-	catch (Exception e)
-	{
-		System.out.println("Error found while showing updated data");
-	}
-     s.close();
-     
-     
-     
-     
-     //below is for updating the booking
-	}
-	
-public static void updateBook (String bookNum, String newValue, int columnInd)
+public static void main(String[]args)
 {
+	String srcfile = "HotelDatabase.txt";
+	BufferedReader read = null;
+	String ln;
+	
 	try
 	{
-		
-	
-	List<String> lines =new ArrayList<>();
-	BufferedReader br = new BufferedReader(new FileReader("HotelDatabase.txt"));
-	String line;
-	while((line = br.readLine()) != null) {
-		lines.add(line);
-	}
-	br.close();
-	for(int i = 0; i <lines.size(); i++)
-	{
-		String CuLine = lines.get(i);
-		String[] parts = CuLine.split("\\|", -1);
-		
-		if (parts.length > 0 && parts[0].trim().equals(bookNum))
+		read = new BufferedReader(new FileReader(srcfile));
+		while((ln = read.readLine())!= null) // So basically with this while loop, it will continue reading the next line
+			                                 // and if there is no next line then it will break out of the while loop and then continue on with the rest of the program
 		{
-			if (columnInd >= 0 && columnInd < parts.length)
+			
+			
+			String[] row = ln.split("\\|(?=([^\"]*\"[^\"]*\")*[^\"]*$)"); // this will ensure it will seperate all that is in the database to different things. so if we want to take the booknum, then it will only print it out
+			
+			for (String index : row)
 			{
-				parts[columnInd] = newValue;
-				lines.set(i, String.join("|", parts));
+				//the percent sign is for a formal specifier or a placeholder, and the number is the amount of spaces of room, to justify them, we put in " - "
+				System.out.printf("%-5s, ", index);
 			}
-			break;
+			System.out.println();
 		}
+		read.close();
 	}
-		
-		BufferedWriter buffwrite = new BufferedWriter(new FileWriter("HotelDatabase.txt"));
-		for(String l : lines)
-		{
-			buffwrite.write(l);
-			buffwrite.newLine();
-		}
-		buffwrite.close();
-	}   
 	catch (Exception e)
 	{
-        System.out.println("Error updating the file: " + e.getMessage());
+		System.out.println(e);
 	}
-
+		
+}
+public enum head
+{
+	BOOKNUM(0), DATEIN(1), DATEOUT(2), ROOMTYPE(3), ADULTNAME(4), CHILDNAME(5),TOTALADULT(6), TOTALCHILD(7), SWIMPASS(8), BUFFETPASS(9);
+	
+	private final int header;
+	head(int head){
+		this.header = head;
+	}
+	public int getheader() {
+		return this.header;
+	}
+	
 }
 }

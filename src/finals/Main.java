@@ -1,5 +1,9 @@
 package finals;
 import java.util.Scanner;
+import java.io.*;
+import java.nio.*;
+import java.util.ArrayList;
+
 public class Main {
 	public static void main(String[] args) {		
 
@@ -7,6 +11,10 @@ public class Main {
 		Scanner scan = new Scanner(System.in);
 		Create_Booking test = new Create_Booking();
 		RoomAvailability roomAvailability = new RoomAvailability();
+		UpdateStayBilling Update = new UpdateStayBilling();
+		
+		
+		
 		
 		System.out.println("\t\t\t\t===================================================");
 		System.out.println("\t\t\t\t     WELCOME TO HOTEL MANAGEMENT CENTRAL SYSTEM     ");
@@ -57,7 +65,22 @@ public class Main {
 		break;
 		case 3:	roomAvailability.displayRoom.DisplayRoom();
 		break;
-		//
+		case 4:
+			
+			System.out.println("\t\t\t\t______________Update Stay and Billing______________");
+			System.out.println("Choose booking number: ");
+			String booknum = scan.nextLine();
+
+			
+			System.out.println("Enter a number of the divider you want to edit: (1-10) ");
+			int arrayindex = scan.nextInt() -1;
+			
+			scan.nextLine();
+			System.out.println("enter changes: ");
+			String option = scan.nextLine();
+			
+			Update.UpdateStayBill(booknum, arrayindex, option);
+		break;	
 		default: System.out.println("Enter + //logic to count how many case/length of enum values// only!");
 		}
 		scan.close(); 
