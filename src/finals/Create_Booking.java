@@ -49,7 +49,10 @@ public class Create_Booking {
             writer.write(toDatabase);
             writer.flush();
             writer.close();
-	}
+            
+            System.out.println("\t\t\t\t===================================================");
+    			System.out.println("\t\t\t\t             BOOKING SUCCESSFULY CREATED            ");
+    			System.out.println("\t\t\t\t===================================================");	}
 	
 	catch (IOException e) {
 		System.err.println("Try");
