@@ -38,10 +38,10 @@ public class Create_Booking {
 			String lastLine = allLines.get(allLines.size() - 1);
 			String[] bookingNumber = lastLine.split("\\|", - 1);
 			int num = Integer.parseInt(bookingNumber[0]);
-			String nextBookingID = Integer.toString(++num);
+			bookingNumber[0] = Integer.toString(++num);
             
             FileWriter writer = new FileWriter(storageRPath.toString(), true);
-            String toDatabase = nextBookingID + "|" + this.timeIn  + "|" + this.timeOut + "|" + 
+            String toDatabase = bookingNumber[0] + "|" + this.timeIn  + "|" + this.timeOut + "|" + 
                                this.roomType + "|" + this.adultNames + "|" + this.childNames + "|" + 
                                this.totalAdult + "|" + this.totalChild + "|" + this.swimPasses + "|" + 
                                this.buffetPasses + "\n";
