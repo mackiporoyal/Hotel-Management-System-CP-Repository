@@ -1,5 +1,7 @@
 package finals;
 import java.util.Scanner;
+import java.util.ArrayList;
+
 public class Main {
 	public static void main(String[] args) {		
 
@@ -36,11 +38,19 @@ public class Main {
 			System.out.print("\t\t\t\tChoose a Room Type : ");
 			String roomType = scan.nextLine();
 			
-			System.out.print("\t\t\t\tEnter adult guests' names : ");
-			String adultNames = scan.nextLine();
+			ArrayList<String> adultNames = new ArrayList<>();
+			for (int i = 1; i <= totalAdult; i++) {
+			    System.out.print("\t\t\t\tEnter name for Adult " + i + ": ");
+			    String name = scan.nextLine();
+			    adultNames.add(name); 
+			}
 				
-			System.out.print("\t\t\t\tEnter child guests' names : ");
-			String childNames = scan.nextLine();
+			ArrayList<String> childNames = new ArrayList<>();
+			for (int i = 1; i <= totalChild; i++) {
+			    System.out.print("\t\t\t\tEnter name for Child " + i + ": ");
+			    String name = scan.nextLine();
+			    childNames.add(name); 
+			}
 			
 			System.out.print("\t\t\t\tHow many Pool Passes? : ");
 			int swimPasses = scan.nextInt();
