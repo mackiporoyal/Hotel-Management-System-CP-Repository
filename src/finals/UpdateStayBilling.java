@@ -3,8 +3,7 @@ import java.util.Scanner;
 import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+
 
 public class UpdateStayBilling {
 	public static void main(String[]args)
@@ -12,7 +11,7 @@ public class UpdateStayBilling {
 	Scanner s = new Scanner(System.in);
 	
 	
-	// where to enter the booking number so that it can find it within the files
+	// where to enter the booking number so that it can find it within the files - charlie
 	System.out.println("\t\t\t\t_________________Update Stay and Billing_________________");
 	System.out.print("\t\t\t\t Choose booking number: ");
 	String bookNum = s.nextLine().trim();
@@ -44,9 +43,9 @@ public class UpdateStayBilling {
 	}
 	// the list
 	System.out.println("\nBooking #   | Date In   | Date Out   | Room Type   | Adult Names   | Child Name   | Total Adult   | Total Child  | Swim Pass   | Buffet Pass    ");
-	System.out.println("____________________________________________________________________________________________________________________________________________\n");
+	System.out.println("____________________________________________________________________________________________________________________________________________________\n");
 	 System.out.printf("%-9s | %-7s | %-8s | %-9s | %-11s | %-11s | %-11s | %-11s | %-9s | %s\n", data);
-	 System.out.println("\n____________________________________________________________________________________________________________________________________________");
+	 System.out.println("\n____________________________________________________________________________________________________________________________________________________");
 	
 	 // the menu
      System.out.println("\n\t\t\t\tChoose what to change:");
@@ -70,7 +69,7 @@ public class UpdateStayBilling {
      updateBook(bookNum, newValue, num);
      
      System.out.println("\n\n\t\t\t\t ________ Successful Update ________");
-     // system for reading the update and updating files 
+     // system for reading the update and updating files -charlie
      
      try {
      BufferedReader buffread = new BufferedReader(new FileReader("HotelDatabase.txt"));
