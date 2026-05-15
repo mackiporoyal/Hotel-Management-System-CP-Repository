@@ -1,6 +1,8 @@
 package finals;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class UpdateStayBilling {
 		ROOMTYPE, 
 		ADULTNAME, 
 		CHILDNAME,
-		TOTALADULT         , 
+		TOTALADULT, 
 		TOTALCHILD, 
 		SWIMPASS, 
 		BUFFETPASS;
@@ -35,7 +37,8 @@ public class UpdateStayBilling {
 		}
 	public void display ()
 	{
-			
+		Path storageRPath = Paths.get("HotelDatabase.txt");
+		Path absolutePath = storageRPath.toAbsolutePath();
 			BufferedReader buffre;
 			String li;
 			String [] bn = null;
@@ -51,7 +54,7 @@ public class UpdateStayBilling {
 							break;
 						}
 				}
-				
+				buffre.close();
 			}
 			catch (Exception e)
 			{
@@ -75,10 +78,11 @@ public class UpdateStayBilling {
 	{
 		head hd = head.values()[indexarr];
 	}
-	
+	String liney = ("\\|");
+	String [] col = liney.split("\\|");
 
-			
-			
+		
 }
+	
 }
 
