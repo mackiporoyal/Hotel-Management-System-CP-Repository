@@ -75,9 +75,8 @@ public class UpdateStayBilling {
 	{
 		head hd = head.values()[indexarr];
 	}
-	Path filepath = Paths.get("HotelDatabase");
-	List<String> deta = Files.readAllLines("HotelDatabase");	
-			String [] col =("HotelDatabase.txt");
+	
+
 			
 			
 }
