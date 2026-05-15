@@ -67,7 +67,7 @@ public class UpdateStayBilling {
 				System.out.print("     | " +h + " |  ");
 			}
 			System.out.println("\n");
-			System.out.printf("%12s %20s %17s %15s %12s %20s %-18s %-18s %-18s %-18s", bn);	
+			System.out.printf("%12s %20s %17s %16s %19s %20s %18s %18s %18s %18s", bn);	
 			
 			System.out.println("\n");
 			for (head h : head.values())
