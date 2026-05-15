@@ -1,15 +1,20 @@
 package finals;
 
 import java.io.*;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class UpdateStayBilling {
-	private String Booknum;
+	private String booknum;
 	private int indexarr;
 	private String changes;
 	
-	public void UpdateStayBill(String bookingnum, int indexarray, String choice)
+	public void booking(String book)
 	{
-		this.Booknum = bookingnum;
+		this.booknum = book;
+	}
+	public void UpdateStayBill(int indexarray, String choice)
+	{
 		this.indexarr = indexarray;
 		this.changes = choice;
 	}
@@ -21,7 +26,7 @@ public class UpdateStayBilling {
 		ROOMTYPE, 
 		ADULTNAME, 
 		CHILDNAME,
-		TOTALADULT, 
+		TOTALADULT         , 
 		TOTALCHILD, 
 		SWIMPASS, 
 		BUFFETPASS;
@@ -30,42 +35,51 @@ public class UpdateStayBilling {
 		}
 	public void display ()
 	{
-			String filename = "HotelDatabase.txt";
+			
 			BufferedReader buffre;
-			String li = "";
-			String [] bn;
+			String li;
+			String [] bn = null;
 			try 
 			{
-				buffre = new BufferedReader(new FileReader(filename));
+				buffre = new BufferedReader(new FileReader("HotelDatabase.txt"));
 				while ((li = buffre.readLine()) != null)
 				{
-						String [] row = li.split("\\|(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-						if (row[0].trim().equals(Booknum))
+						String [] row = li.split("\\|");
+						if (row[0].trim().equals(booknum))
 						{
 							bn = row; 
 							break;
 						}
 				}
-				buffre.close();
+				
 			}
 			catch (Exception e)
 			{
 				System.out.println("Error found while reading the textfile: " + e);
 			}
+			
+			//
 			for (head h : head.values())
 			{
-				System.out.print("\t    " +h);
+				System.out.print("     | " +h + " |  ");
 			}
-			System.out.println();
+			System.out.println("\n");
+			System.out.printf("%12s %20s %17s %15s %12s %20s %-18s %-18s %-18s %-18s", bn);	
 			
-			
-			
-			
-			
-			
-			
-			
+			System.out.println("\n");
+			for (head h : head.values())
+			{
+				System.out.print("     | " +h + " |  ");
+			}	
+	if(indexarr >= 0 && indexarr < head.values().length)
+	{
+		head hd = head.values()[indexarr];
 	}
-
-	
+	Path filepath = Paths.get("HotelDatabase");
+	List<String> deta = Files.readAllLines("HotelDatabase");	
+			String [] col =("HotelDatabase.txt");
+			
+			
 }
+}
+

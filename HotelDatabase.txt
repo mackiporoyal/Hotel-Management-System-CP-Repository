@@ -1,4 +1,0 @@
-1001|2026-05-10|2026-05-15|Family|Leon Kennedy, Claire Redfield|Sherry Birkin|2|1|3|2
-1002|2026-05-11|2026-05-12|Standard|Ada Wong||1|0|0|1
-1003|2026-06-01|2026-06-10|Penthouse|Grace Ashcroft|Emily Ashcroft|1|1|2|21004|123123|123123|Double|Ethan Winters|Rosemary Winters1|1|2|2
-1004|23|123|Double|Ethan Winters|Rosemary Winters|1|1|2|2
