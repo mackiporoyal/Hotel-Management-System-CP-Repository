@@ -81,7 +81,7 @@ public class Main {
             String changes = scan.nextLine();
             
 			Update.UpdateStayBill(index,changes);
-			Update.display();
+			
 		break;	
 		default: System.out.println("Enter + //logic to count how many case/length of enum values// only!");
 		}

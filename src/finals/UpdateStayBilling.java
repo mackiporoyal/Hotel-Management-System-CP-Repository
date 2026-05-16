@@ -86,53 +86,12 @@ public class UpdateStayBilling {
 		try {
 			BufferedWriter write = new BufferedWriter(new FileWriter("HotelDatabase.txt"));
 			write.write(changes);
-			
 		}
 	catch (Exception e)
 		{
 		
 		}
-		BufferedReader bofer;
-		String line;
-		String [] data = null;
-		try 
-		{
-			buffre = new BufferedReader(new FileReader("HotelDatabase.txt"));
-			while ((li = buffre.readLine()) != null)
-			{
-					String [] row = li.split("\\|");
-					if (row[0].trim().equals(booknum))
-					{
-						bn = row; 
-						break;
-					}
-			}
-			buffre.close();
-		}
-		catch (Exception e)
-		{
-			System.out.println("Error found while reading the textfile: " + e);
-		}
-		
-		//
-		for (head h : head.values())
-		{
-			System.out.print("     | " +h + " |  ");
-		}
-		System.out.println("\n");
-		System.out.printf("%12s %20s %17s %16s %19s %20s %18s %18s %18s %18s", bn);	
-		
-		System.out.println("\n");
 	
-	
-	
-	
-	
-	
-	
-	}
 
 }
-	
-
-
+}
