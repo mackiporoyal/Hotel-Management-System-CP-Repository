@@ -18,7 +18,7 @@ public class Main {
 		
 		switch(chooseMenu) {
 		case 1:
-			System.out.println("\t\t\t\t________________Create Booking_____________________");
+			System.out.println("\t\t\t\t_________________Create Booking____________________");
 			System.out.println("\t\t\t\tHow many adults? : ");
 			int adultNum = scan.nextInt();
 	
@@ -29,7 +29,9 @@ public class Main {
 		
 		
 		break;
-		case 2: System.out.println("2");
+		case 2: 
+			System.out.println("\t\t\t\t______________Check Existing Booking_______________");
+			System.out.println("\t\t\t\t");
 		break;
 		case 3:	roomAvailability.displayRoom.DisplayRoom();
 		break;
