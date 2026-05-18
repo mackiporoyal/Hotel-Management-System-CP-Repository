@@ -69,7 +69,9 @@ public class Main {
 		
 		
 		break;
-		case 2: System.out.println("2");
+		case 2: 
+			System.out.println("\t\t\t\t______________Check Existing Booking_______________");
+			System.out.println("\t\t\t\t");
 		break;
 		case 3:	roomAvailability.displayRoom.DisplayRoom();
 		break;
