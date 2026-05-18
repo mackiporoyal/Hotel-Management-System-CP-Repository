@@ -78,14 +78,13 @@ public class UpdateStayBilling {
 	{
 		head hd = head.values()[indexarr];
 	}
-	String liney = ("\\|");
-	String [] col = liney.split("\\|");
+	
 
 	
 
 		try {
 			BufferedWriter write = new BufferedWriter(new FileWriter("HotelDatabase.txt"));
-			write.write(changes);
+			
 		}
 	catch (Exception e)
 		{
