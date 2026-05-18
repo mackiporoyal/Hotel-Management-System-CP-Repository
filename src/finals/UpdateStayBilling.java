@@ -68,7 +68,6 @@ public class UpdateStayBilling {
 			}
 			System.out.println("\n");
 			System.out.printf("%12s %20s %17s %16s %19s %20s %18s %18s %18s %18s", bn);	
-			
 			System.out.println("\n");
 			for (head h : head.values())
 			{
@@ -84,6 +83,7 @@ public class UpdateStayBilling {
 
 		try {
 			BufferedWriter write = new BufferedWriter(new FileWriter("HotelDatabase.txt"));
+			write.write(changes);
 			
 		}
 	catch (Exception e)
