@@ -1,6 +1,6 @@
 package finals;
 
-public class DisplayRoom {
+public class Display_Room {
 	RoomAvailability.Floors[] floors = RoomAvailability.Floors.values();
 	private char[][] rooms ={
 			{'A','A','A','A','A','A','A','A',},

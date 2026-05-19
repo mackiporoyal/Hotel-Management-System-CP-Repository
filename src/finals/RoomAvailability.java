@@ -4,7 +4,7 @@ public class RoomAvailability {
 	public enum Floors {
 		FIRST, SECOND, THIRD, FOURTH, FIFTH;
 	}
-	DisplayRoom displayRoom = new DisplayRoom();
+	Display_Room displayRoom = new Display_Room();
 	public void displayRoom() {
 		displayRoom.DisplayRoom();
 	}
