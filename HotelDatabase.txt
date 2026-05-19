@@ -6,6 +6,4 @@
 1007|456|456|Family|Claire Dunphy, Phil Dunphy|Haley Dunphy, Alex Dunphy, Luke Dunphy|2|3|5|5
 1008|879|987|Family|Jay Pritchett, Gloria Delgado|Manny Delgado|2|1|3|3
 1009|134|1541|Family|Daniel Howell, Philip Lester|Pheal, Golden Pig|2|2|4|4
-1010|132|21|s|rar||1|0|1|1
-1011|1|1|S|mack||1|0|1|110111|1|1|1|1|1|1|1|1|1|ACTIVE
-10111|1|1|1|1|1|1|1|1|1|ACTIVE
+1010|2026-5-20|2026-5-21|Double|Nathan Drake, Samuel Drake||2|0|2|2|ACTIVE
