@@ -65,7 +65,7 @@ public class Main {
 			int buffetPasses = scan.nextInt();
 			
 			
-			test.writeDatabase(timeIn, timeOut, roomType, adultNames, childNames, totalAdult, totalChild, swimPasses, buffetPasses);
+			//test.writeDatabase(timeIn, timeOut, roomType, adultNames, childNames, totalAdult, totalChild, swimPasses, buffetPasses);
 		
 		
 		break;

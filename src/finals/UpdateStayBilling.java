@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.io.*;
 
 public class UpdateStayBilling {
@@ -36,9 +37,10 @@ public class UpdateStayBilling {
 		BUFFETPASS;
 		
 
-		}
+	}
 	public void display ()
 	{
+		
 			BufferedReader buffre;
 			String li;
 			String [] bn = null;
@@ -61,36 +63,75 @@ public class UpdateStayBilling {
 				System.out.println("Error found while reading the textfile: " + e);
 			}
 			
-			//
-			for (head h : head.values())
-			{
-				System.out.print("     | " +h + " |  ");
-			}
-			System.out.println("\n");
-			System.out.printf("%12s %20s %17s %16s %19s %20s %18s %18s %18s %18s", bn);	
-			System.out.println("\n");
-			for (head h : head.values())
-			{
-				System.out.print("     | " +h + " |  ");
-			}	
+			//Header
+			try {
+				List<String[]> allRows = Files.lines(Paths.get("HotelDatabase.txt")).map(line -> line.split("\\|")).collect(Collectors.toList());
+				
+		        if (allRows.isEmpty()) {
+		            System.out.println("The database is empty.");
+		            return;
+		        }
+		
+		        int numColumns = allRows.get(0).length;
+		        int[] maxWidths = new int[numColumns];
+		        
+		        for (String[] row : allRows) {
+		            for (int i = 0; i < row.length; i++) {
+		                if (row[i].length() > maxWidths[i]) {
+		                    maxWidths[i] = row[i].length();
+		   
+				      }
+		            }
+		          }
+		        int rowsToDisplay = Math.min(1, allRows.size());
+		        
+		        for (int r = 0; r < rowsToDisplay; r++) {
+		            String[] row = allRows.get(r);
+		            for (int c = 0; c < row.length; c++) {
+		                
+		                System.out.printf("%-" + (maxWidths[c] + 2) + "s", row[c]);
+		            }
+		            System.out.println();
+		            
+		            
+		            //Selected booknum
+		            if (bn != null)
+		            {
+		                for (int c = 0; c < bn.length; c++) 
+		                {		                	
+		                    System.out.printf("%-" + (maxWidths[c] + 2) + "s", bn[c]);
+		                }
+		                System.out.println();
+		            }
+		            else 
+		            {
+		                System.out.println("Booking number not found.");
+		            }
+		            
+		           }
+				}
+				catch (Exception e)
+				{
+					System.out.println("Error reading the file: " + e.getMessage());
+				}
+
 	if(indexarr >= 0 && indexarr < head.values().length)
 	{
 		head hd = head.values()[indexarr];
 	}
 	
+	try(FileWriter writer = new FileWriter("HotelDatabase.txt", false); PrintWriter pow = new PrintWriter(writer))
+	{
+		
 
 	
-
-		try {
-			FileWriter write = new FileWriter();
-			
-		}
-	catch (Exception e)
-		{
 		
-		}
+	}
 	
-		
+	catch(IOException e)
+	{
+		System.err.println(e);
+	}
 
 } 
 }
