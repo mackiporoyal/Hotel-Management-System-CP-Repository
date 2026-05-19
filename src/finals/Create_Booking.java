@@ -10,4 +10,4 @@ public class Create_Booking {
 			Database writeLine = new Database();
 			writeLine.writeDatabase(timeIn, timeOut, roomType, adultNames, childNames, totalAdult, totalChild, swimPasses, buffetPasses);
 	}
-}
+} 
