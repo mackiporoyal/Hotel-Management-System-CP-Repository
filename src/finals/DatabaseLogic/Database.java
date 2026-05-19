@@ -10,8 +10,8 @@ import java.io.FileWriter;
 
 public class Database {
 	
-	private int timeIn;
-	private int timeOut;
+	private String timeIn;
+	private String timeOut;
 	private String roomType;
 	private String adultNames;
 	private String childNames;
