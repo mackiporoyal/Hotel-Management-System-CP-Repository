@@ -83,7 +83,7 @@ public class UpdateStayBilling {
 
 		try {
 			BufferedWriter write = new BufferedWriter(new FileWriter("HotelDatabase.txt"));
-			write.write(changes);
+	
 			
 		}
 	catch (Exception e)
