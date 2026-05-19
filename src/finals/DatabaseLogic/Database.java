@@ -24,7 +24,7 @@ public class Database {
 	Path storageRPath = Paths.get("HotelDatabase.txt");
 	Path absolutePath = storageRPath.toAbsolutePath();
 	
-	public void writeDatabase(int timeIn, int timeOut, String roomType, ArrayList<String> adultNames, ArrayList<String> childNames, int totalAdult, int totalChild, int swimPasses, int buffetPasses) 
+	public void writeDatabase(String timeIn, String timeOut, String roomType, ArrayList<String> adultNames, ArrayList<String> childNames, int totalAdult, int totalChild, int swimPasses, int buffetPasses) 
 	{
 		this.timeIn = timeIn;
 		this.timeOut = timeOut;
@@ -67,5 +67,7 @@ public class Database {
 			System.err.println("Database write operation failed!");
 			e.printStackTrace();
 		}
+	
+	//logic for displaying 
 	}
 }

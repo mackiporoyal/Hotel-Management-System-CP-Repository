@@ -4,7 +4,7 @@ import java.io.*;
 import java.nio.*;
 import java.util.ArrayList;
 
-public class Main {
+public class Main { 
 	public static void main(String[] args) {		
 
 		Menu menu = new Menu();
@@ -43,11 +43,25 @@ public class Main {
 			System.out.print("\t\t\t\tHow many children? : ");
 			int totalChild = scan.nextInt();
 			
-			System.out.print("\t\t\t\tDate of Check In : ");
-			int timeIn = scan.nextInt();
+			System.out.println("\t\t\t\tDate of Check In : ");
+			System.out.print("\t\t\t\tEnter year (YYYY) : ");
+			int yearIn = scan.nextInt();
+			System.out.print("\t\t\t\tEnter month (MM) : ");
+			int monthIn = scan.nextInt();
+			System.out.print("\t\t\t\tEnter day (DD) : ");
+			int dayIn = scan.nextInt();
+
+			String timeIn = Integer.toString(yearIn) + "-" + Integer.toString(monthIn) + "-" + Integer.toString(dayIn);
 			
-			System.out.print("\t\t\t\tDate of Check Out : ");
-			int timeOut = scan.nextInt();
+			System.out.println("\t\t\t\tDate of Check Out : ");
+			System.out.print("\t\t\t\tEnter year (YYYY) : ");
+			int yearOut = scan.nextInt();
+			System.out.print("\t\t\t\tEnter month (MM) : ");
+			int monthOut = scan.nextInt();
+			System.out.print("\t\t\t\tEnter day (DD) : ");
+			int dayOut = scan.nextInt();
+			
+			String timeOut = Integer.toString(yearOut) + "-" + Integer.toString(monthOut) + "-" + Integer.toString(dayOut);
 			
 			scan.nextLine();
 			
