@@ -126,6 +126,7 @@ public class UpdateStayBilling {
 	
 	
 	 //Changes logic
+	
 	try {
 		
 		List<String[]> allRows = Files.lines(Paths.get("HotelDatabase.txt")).map(line -> line.split("\\|")).collect(Collectors.toList());
@@ -161,17 +162,43 @@ public class UpdateStayBilling {
             for (int i = 0; i < rowe.length; i++) {
                 if (rowe[i].length() > maxWid[i]) {
                     maxWid[i] = rowe[i].length();
-                    
-			
                 }
             }
         }
+        
 
-            System.out.println();
+			
+		
+        if (allRows.isEmpty()) {
+            System.out.println("The database is empty.");
+            return;
+        }
+
+        int numColumns = allRows.get(0).length;
+        int[] maxWidths = new int[numColumns];
+        
+        for (String[] row : allRows) {
+            for (int i = 0; i < row.length; i++) {
+                if (row[i].length() > maxWidths[i]) {
+                    maxWidths[i] = row[i].length();
+   
+		      }
+            }
+          }
+        int rowsToDisplay = Math.min(1, allRows.size());
+            
         //Updated display
         System.out.println("\n\t\t\t\t________________Update Successful!________________");
+        for (int r = 0; r < rowsToDisplay; r++) {
+            String[] row = allRows.get(r);
+            for (int c = 0; c < row.length; c++) {
+                
+                System.out.printf("%-" + (maxWidths[c] + 2) + "s", row[c]);
+            }
+            System.out.println();
+        }
 
-        
+		
         for(int c = 0; c < Target.length; c++)
         {
         	System.out.printf("%-" + (maxWid[c] + 2) + "s", Target[c]);
