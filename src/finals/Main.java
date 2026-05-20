@@ -76,21 +76,22 @@ public class Main {
 		case 3:	roomAvailability.displayRoom.DisplayRoom();
 		break;
 		case 4:
-			System.out.println("\t\t\t\t________________Update Stay and Billing_____________________");
+			System.out.println("\t\t\t\t______________Update Stay and Billing______________");
 			System.out.print("\t\t\t\tEnter Booking # : ");
 			String booknum = scan.nextLine().trim();
 			Update.booking(booknum);
 			Update.display();
 			
 			
-			System.out.println("\n\n\t\t\t\tChoose what to change (1-10): ");
+			System.out.print("\n\n\t\t\t\tChoose what to change (1-10): ");
 			int index = scan.nextInt() -1;
 			
 			scan.nextLine();
-			System.out.println("Enter changes: ");
+			System.out.print("\n\t\t\t\tEnter changes: ");
             String changes = scan.nextLine();
             
 			Update.UpdateStayBill(index,changes);
+			Update.updatedChanges();
 			
 		break;	
 		default: System.out.println("Enter + //logic to count how many case/length of enum values// only!");
