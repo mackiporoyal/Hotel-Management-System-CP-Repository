@@ -19,6 +19,20 @@ public class Menu {
 	}
 
 	public void displayMenu() {
+		System.out.println("\t\t╔══════════════════════════════════════════════════════════════════════════════╗");
+		System.out.println("\t\t║                                                                              ║");
+		System.out.println("\t\t║   ██      ██  ████████  ██        ██████    ███████   ███    ███  ████████   ║");
+		System.out.println("\t\t║   ██      ██  ██        ██       ██    ██  ██     ██  ████  ████  ██         ║");
+		System.out.println("\t\t║   ██  ██  ██  ██████    ██       ██        ██     ██  ██ ████ ██  ██████     ║");
+		System.out.println("\t\t║   ██████████  ██        ██       ██    ██  ██     ██  ██  ██  ██  ██         ║");
+		System.out.println("\t\t║    ██    ██   ████████  ████████  ██████    ███████   ██      ██  ████████   ║");
+		System.out.println("\t\t║                                                                              ║");
+		System.out.println("\t\t╠══════════════════════════════════════════════════════════════════════════════╣");
+		System.out.println("\t\t║                                                                              ║");
+		System.out.println("\t\t║                 WELCOME TO HOTEL MANAGEMENT CENTRAL SYSTEM                   ║");
+		System.out.println("\t\t║                         - System Ready to Use -                              ║");
+		System.out.println("\t\t║                                                                              ║");
+		System.out.println("\t\t╚══════════════════════════════════════════════════════════════════════════════╝");
 		System.out.println("\t\t\t\t___________________Select Option___________________");
 		int j = 1;
 		for(Menu.eMenu listMenu: Menu.eMenu.values()) {

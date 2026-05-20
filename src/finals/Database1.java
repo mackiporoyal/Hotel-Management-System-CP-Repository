@@ -1,4 +1,4 @@
-package finals.DatabaseLogic;
+package finals;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class Database {
+public class Database1 {
 	
 	private int adultGuest;
 	private int timeIn;
@@ -26,7 +26,7 @@ public class Database {
 	Path storageRPath = Paths.get("HotelDatabase.txt");
 	Path absolutePath = storageRPath.toAbsolutePath();
 	
-	public void writeDatabase(String timeIn2, String timeOut2, String roomType, ArrayList<String> adultNames, ArrayList<String> childNames, int totalAdult, int totalChild, int swimPasses, int buffetPasses) 
+	public void writeDatabase(int timeIn, int timeOut, String roomType, ArrayList<String> adultNames, ArrayList<String> childNames, int totalAdult, int totalChild, int swimPasses, int buffetPasses) 
 	{
 		this.timeIn = timeIn;
 		this.timeOut = timeOut;
@@ -41,13 +41,13 @@ public class Database {
 		
 		try 
 		{
+			// Handle file initialization if it's empty
 			List<String> allLines = Files.readAllLines(absolutePath);
-			int num = 1000;
+			int num = 1;
 			if (!allLines.isEmpty()) {
 				String lastLine = allLines.get(allLines.size() - 1);
 				String[] bookingNumber = lastLine.split("\\|", -1);
 				num = Integer.parseInt(bookingNumber[0]) + 1;
-				bookingNumber[0] = Integer.toString(num);	
 			}
 			
 			FileWriter writer = new FileWriter(storageRPath.toString(), true);
@@ -67,12 +67,16 @@ public class Database {
 			System.err.println("Error writing to database: " + e.getMessage());
 		}
 	}	
-
+	/*
+	 * Reads the entire database, checks if the checkout time has passed based 
+	 * on the system's local time, and updates the status column to FINISHED if necessary.
+	 */
 	public void refreshDatabase() {
 		try {
 			List<String> allLines = Files.readAllLines(absolutePath);
 			List<String> updatedLines = new ArrayList<>();
 			
+			// Get current system time hour (assuming timeIn/timeOut are stored as military hours, e.g., 14 for 2 PM)
 			int currentHour = LocalTime.now().getHour(); 
 			boolean fileChanged = false;
 
