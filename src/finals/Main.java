@@ -8,43 +8,26 @@ public class Main {
 		Scanner scan = new Scanner(System.in);
 		CreateBooking create = new CreateBooking();
 		RoomAvailability room = new RoomAvailability();
-		UpdateStayBilling Update = new UpdateStayBilling();
-		
+		UpdateStayBilling update = new UpdateStayBilling();
+		CheckForBooking check = new CheckForBooking();
 		menu.displayMenu();
+		
+		while(true) {
 		System.out.print("\t\t\t\tENTER HERE: ");
-		int chooseMenu = scan.nextInt();
+		int chooseMenu = 0;
+		try {
+		chooseMenu = scan.nextInt();
 		scan.nextLine();
+		}catch(Exception e) {
+			continue;
+		}
 		
 		switch(chooseMenu) {
 		case 1:
 		    create.writeDatabase(); // This now automatically runs the entire question sequence!
 		break;
 		case 2: 
-			System.out.println("\t\t╔══════════════════════════════════════════════════════════════════════════════╗");
-			System.out.println("\t\t║                           CHECK EXISTING BOOKING                             ║");
-			System.out.println("\t\t╚══════════════════════════════════════════════════════════════════════════════╝");
-
-			System.out.println("\t\t\t\t\t  1. View All Bookings");
-			System.out.println("\t\t\t\t\t  2. Search by Booking Number");
-			System.out.println("\t\t\t\t\t  3. Search by Guest Name");
-			System.out.print("\t\t\t\tENTER HERE: ");
-			int num = scan.nextInt();
-			scan.nextLine(); 
-			
-			String input = ""; 
-			
-			if (num == 2) {
-				System.out.print("\t\t\t\tENTER BOOKING ID: ");
-				input = scan.nextLine();
-			} else if (num == 3) {
-				System.out.print("\t\t\t\tENTER GUEST NAME: ");
-				input = scan.nextLine();
-			}
-			
-			System.out.println();
-
-			check.runDatabase(num, input);
-			
+			check.printHeader();
 		break;
 		case 3:
 		    room.printHeader();
@@ -56,8 +39,8 @@ public class Main {
 			System.out.println("\t\t╚══════════════════════════════════════════════════════════════════════════════╝");
 			System.out.print("\t\t\t\tEnter Booking # : ");
 			String booknum = scan.nextLine().trim();
-			Update.booking(booknum); 
-			Update.display();
+			update.booking(booknum); 
+			update.display();
 			
 			System.out.println("\n\n\t\t\t\tChoose what to change (1-10): ");
 			int index = scan.nextInt() -1;
@@ -66,7 +49,7 @@ public class Main {
 			System.out.println("Enter changes: ");
 			String changes = scan.nextLine();
 			            
-			Update.UpdateStayBill(index,changes);
+			update.UpdateStayBill(index,changes);
 			
 		break;	
 		default: 
@@ -75,7 +58,8 @@ public class Main {
 			System.out.println("\t\t╚══════════════════════════════════════════════════════════════════════════════╝");
 			System.out.println("Enter + //logic to count how many case/length of enum values// only!");
 		}
-		scan.close(); 
 		
+		scan.close(); 
+		}
 	} 
 }

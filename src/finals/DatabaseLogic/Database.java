@@ -15,8 +15,8 @@ import java.io.IOException;
 public class Database {
 	
 	private int adultGuest;
-	private int timeIn;
-	private int timeOut;
+	private String timeIn;
+	private String timeOut;
 	private String roomType;
 	private String adultNames;
 	private String childNames;
@@ -29,7 +29,7 @@ public class Database {
 	Path storageRPath = Paths.get("HotelDatabase.txt");
 	Path absolutePath = storageRPath.toAbsolutePath();
 	
-	public void writeDatabase(int timeIn, int timeOut, String roomType, ArrayList<String> adultNames, ArrayList<String> childNames, int totalAdult, int totalChild, int swimPasses, int buffetPasses) 
+	public void writeLine(String timeIn, String timeOut, String roomType, ArrayList<String> adultNames, ArrayList<String> childNames, int totalAdult, int totalChild, int swimPasses, int buffetPasses) 
 	{
 		this.timeIn = timeIn;
 		this.timeOut = timeOut;
@@ -42,27 +42,24 @@ public class Database {
 		this.buffetPasses = buffetPasses;
 		this.status = "ACTIVE";
 		
-		int num = 1000; 
-		
+		int num = 10000; 
 		try 
 		{
-			if (Files.exists(absolutePath) && Files.size(absolutePath) > 0) {
-				List<String> allLines = Files.readAllLines(absolutePath);
+			if (Files.exists(absolutePath)) {
+				List<String> allLines = Files.readAllLines(absolutePath);	
 				if (!allLines.isEmpty()) {
 					String lastLine = allLines.get(allLines.size() - 1);
 					String[] bookingNumber = lastLine.split("\\|");
-					num = Integer.parseInt(bookingNumber[0].trim()) + 1;
+					num = Integer.parseInt(bookingNumber[0]);
+					num++;
 				}
 			} else {
 				Files.createFile(absolutePath);
 			}
-			
-			FileWriter writer = new FileWriter(storageRPath.toString(), true);
-			// Appended |ACTIVE at the end of the data string
 			String toDatabase = num + "|" + this.timeIn  + "|" + this.timeOut + "|" + this.roomType + "|" + this.adultNames + "|" + this.childNames + "|" + this.totalAdult + "|" + this.totalChild + "|" + this.swimPasses + "|" + this.buffetPasses + "|" + this.status + "\n";
 			
-			try (BufferedWriter writer = new BufferedWriter(new FileWriter(storageRPath.toString(), true))) {
-				writer.write(toDatabase);
+			try (BufferedWriter writer1 = new BufferedWriter(new FileWriter(storageRPath.toString(), true))) {
+				writer1.write(toDatabase);
 				
 				System.out.println("\t\t\t\t===================================================");
 				System.out.println("\t\t\t\t             BOOKING SUCCESSFULLY CREATED          ");
@@ -78,7 +75,7 @@ public class Database {
 	
 	public void runDatabase(int num, String input) {
 		boolean exists = false;
-
+		System.out.println("HELLO");
 		try (BufferedReader br = new BufferedReader(new FileReader(absolutePath.toFile()))) {
 			String line;
 			while ((line = br.readLine()) != null) {
