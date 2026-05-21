@@ -1,7 +1,9 @@
 package finals.DatabaseLogic;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalTime; // Imported for checking current time
 import java.util.ArrayList;
 import java.util.List;
 import java.io.BufferedReader;
@@ -12,6 +14,7 @@ import java.io.IOException;
 
 public class Database {
 	
+	private int adultGuest;
 	private int timeIn;
 	private int timeOut;
 	private String roomType;
@@ -54,6 +57,8 @@ public class Database {
 				Files.createFile(absolutePath);
 			}
 			
+			FileWriter writer = new FileWriter(storageRPath.toString(), true);
+			// Appended |ACTIVE at the end of the data string
 			String toDatabase = num + "|" + this.timeIn  + "|" + this.timeOut + "|" + this.roomType + "|" + this.adultNames + "|" + this.childNames + "|" + this.totalAdult + "|" + this.totalChild + "|" + this.swimPasses + "|" + this.buffetPasses + "|" + this.status + "\n";
 			
 			try (BufferedWriter writer = new BufferedWriter(new FileWriter(storageRPath.toString(), true))) {
