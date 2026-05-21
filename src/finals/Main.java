@@ -118,7 +118,7 @@ public class Main {
 			System.out.println("\t\t╚══════════════════════════════════════════════════════════════════════════════╝");
 			System.out.print("\t\t\t\tEnter Booking # : ");
 			String booknum = scan.nextLine().trim();
-			Update.booking(booknum);
+			Update.booking(booknum); 
 			Update.display();
 			
 			System.out.println("\n\n\t\t\t\tChoose what to change (1-10): ");

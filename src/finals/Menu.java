@@ -8,7 +8,7 @@ public class Menu {
 		MANAGE_STAY_AND_BILLING("Manage Stay and Billing"),
 		MASTER_RECORD("Master Record"); 
 	 
-		private final String option;
+		private final String option; 
 	    eMenu(String option) {
 	    	this.option = option; 
 	    }
