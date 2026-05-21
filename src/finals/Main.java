@@ -3,6 +3,7 @@ import java.util.Scanner;
 import java.io.*;
 import java.nio.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 	public static void main(String[] args) {		
@@ -10,6 +11,7 @@ public class Main {
 		Menu menu = new Menu();
 		Scanner scan = new Scanner(System.in);
 		Create_Booking test = new Create_Booking();
+		Check_For_Booking check = new Check_For_Booking();
 		RoomAvailability roomAvailability = new RoomAvailability();
 		UpdateStayBilling Update = new UpdateStayBilling();
 		
@@ -81,7 +83,28 @@ public class Main {
 			System.out.println("\t\t╔══════════════════════════════════════════════════════════════════════════════╗");
 			System.out.println("\t\t║                           CHECK EXISTING BOOKING                             ║");
 			System.out.println("\t\t╚══════════════════════════════════════════════════════════════════════════════╝");
-			System.out.println("\t\t\t\t");
+
+			System.out.println("\t\t\t\t\t  1. View All Bookings");
+			System.out.println("\t\t\t\t\t  2. Search by Booking Number");
+			System.out.println("\t\t\t\t\t  3. Search by Guest Name");
+			System.out.print("\t\t\t\tENTER HERE: ");
+			int num = scan.nextInt();
+			scan.nextLine(); 
+			
+			String input = ""; 
+			
+			if (num == 2) {
+				System.out.print("\t\t\t\tENTER BOOKING ID: ");
+				input = scan.nextLine();
+			} else if (num == 3) {
+				System.out.print("\t\t\t\tENTER GUEST NAME: ");
+				input = scan.nextLine();
+			}
+			
+			System.out.println();
+
+			check.runDatabase(num, input);
+			
 		break;
 		case 3:	
 			System.out.println("\t\t╔══════════════════════════════════════════════════════════════════════════════╗");
@@ -116,5 +139,5 @@ public class Main {
 		}
 		scan.close(); 
 		
-	}
+	} 
 }

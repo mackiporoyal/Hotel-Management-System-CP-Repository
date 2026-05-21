@@ -1,12 +1,14 @@
 package finals.DatabaseLogic;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 
 public class Database {
 	
@@ -67,5 +69,52 @@ public class Database {
 			System.err.println("Database write operation failed!");
 			e.printStackTrace();
 		}
+	}
+	
+	public void runDatabase(int num, String input) {
+		boolean exists = false;
+
+		try (BufferedReader br = new BufferedReader(new FileReader(absolutePath.toFile()))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				if (!line.trim().isEmpty()) {
+					String[] row = line.split("\\|", -1);
+					
+					if (row.length >= 10) {
+						if (num == 1) {
+							displayBooking(row);
+							exists = true;
+						} else if (num == 2 || num == 3) {
+							int col = (num == 2) ? 0 : 4; 
+							
+							if (row[col].toLowerCase().contains(input.toLowerCase())) {
+								displayBooking(row);
+								exists = true;
+							}
+						}
+					}
+				}
+			}
+			
+			if (!exists && num != 1) {
+				System.out.println("\t\t\t\t\t No matches found for: " + input);
+			}
+			
+		} catch (IOException e) {
+			System.out.println("\t\t\t\t\t Error reading database: " + e.getMessage());
+		}
+	}
+
+	private void displayBooking(String[] row) {
+		System.out.println("\t\t\t\t--------------------------------------------------");
+		System.out.println("\t\t\t\t Booking ID: " + row[0]);
+		System.out.println("\t\t\t\t Check-in:  " + row[1] + "  |  Check-out: " + row[2]);
+		System.out.println("\t\t\t\t Room Type: " + row[3]);
+		System.out.println("\t\t\t\t Guests:    " + row[4]);
+		if (!row[5].isEmpty() && !row[5].equalsIgnoreCase("none")) {
+			System.out.println("\t\t\t\t Children:  " + row[5]);
+		}
+		System.out.println("\t\t\t\t Passes:    Pool (" + row[8] + ") | Buffet (" + row[9] + ")");
+		System.out.println("\t\t\t\t--------------------------------------------------\n");
 	}
 }

@@ -1,7 +1,5 @@
 package finals;
-
 import java.util.ArrayList;
-
 import finals.DatabaseLogic.Database;
 
 public class Create_Booking {
