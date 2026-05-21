@@ -9,25 +9,26 @@ public class Main {
 		CreateBooking create = new CreateBooking();
 		RoomAvailability room = new RoomAvailability();
 		UpdateStayBilling update = new UpdateStayBilling();
-		CheckForBooking check = new CheckForBooking();
-		menu.displayMenu();
+		CheckForBooking search = new CheckForBooking();
 		
 		while(true) {
+		menu.displayMenu();
 		System.out.print("\t\t\t\tENTER HERE: ");
 		int chooseMenu = 0;
 		try {
 		chooseMenu = scan.nextInt();
 		scan.nextLine();
 		}catch(Exception e) {
+			scan.nextLine();
 			continue;
 		}
 		
 		switch(chooseMenu) {
 		case 1:
-		    create.writeDatabase(); // This now automatically runs the entire question sequence!
+		    create.writeDatabase(); 
 		break;
 		case 2: 
-			check.printHeader();
+			search.checkBooking();
 		break;
 		case 3:
 		    room.printHeader();
@@ -59,7 +60,8 @@ public class Main {
 			System.out.println("Enter + //logic to count how many case/length of enum values// only!");
 		}
 		
-		scan.close(); 
+		
 		}
+		
 	} 
 }

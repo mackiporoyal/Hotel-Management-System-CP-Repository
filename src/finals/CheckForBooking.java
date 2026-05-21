@@ -3,7 +3,7 @@ import java.util.Scanner;
 import finals.DatabaseLogic.Database;
 
 public class CheckForBooking {
-    public void printHeader() {
+    public void checkBooking() {
     	Scanner scan = new Scanner(System.in);
     	Database checkDatabase = new Database();
     		System.out.println("\t\t╔══════════════════════════════════════════════════════════════════════════════╗");
