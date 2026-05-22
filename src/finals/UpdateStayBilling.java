@@ -23,21 +23,7 @@ public class UpdateStayBilling {
 		this.indexarr = indexarray;
 		this.changes = choice;
 	}
-	 enum head
-	{
-		BOOKNUM,
-		DATEIN,
-		DATEOUT, 
-		ROOMTYPE, 
-		ADULTNAME, 
-		CHILDNAME,
-		TOTALADULT, 
-		TOTALCHILD, 
-		SWIMPASS, 
-		BUFFETPASS;
-		
 
-	}
 	public void display ()
 	{
 		
@@ -118,13 +104,7 @@ public class UpdateStayBilling {
 	}
 	public void updatedChanges()
 	{
-		
-	if(indexarr >= 0 && indexarr < head.values().length)
-	{
-		head hd = head.values()[indexarr];
-	}
-	
-	
+
 	 //Changes logic
 	
 	try {
