@@ -46,34 +46,9 @@ public class Database {
 		int num = 10000; 
 		String currentLine;
 		List<String[]> allLine = new ArrayList<>();
-
-		try (BufferedReader read = new BufferedReader(new FileReader(absolutePath.toFile()))) {
-
-		    while ((currentLine = read.readLine()) != null) {
-		        String[] columns = currentLine.split("\\|");					
-		        allLine.add(columns);
-		        num = Integer.parseInt(columns[0].trim());
-		    }
-		 
-		    num++;
-		    System.out.println("The next available booking number is: " + num);
-		} catch (IOException e) {
-		    e.printStackTrace(); // This prints the error if the file doesn't exist
-		}
-//			int numColumns = allLine.get(0).length;
-//			int[] colWidths = new int[numColumns];
-//			for(String[] lines: allLine) {
-//				for(int i = 0; i<lines.length; i++) {
-//					if (i < 	numColumns && lines.length > colWidths[i]) {}
-//				}
-//			}
-				
-//				if()
-//			} else {
-//				Files.createFile(absolutePath);
-//			}
+			
 			String toDatabase = num + "|" + this.timeIn  + "|" + this.timeOut + "|" + this.roomType + "|" + this.adultNames + "|" + this.childNames + "|" + this.totalAdult + "|" + this.totalChild + "|" + this.swimPasses + "|" + this.buffetPasses + "|" + this.status + "\n";
-//			
+			
 			try (BufferedWriter writer1 = new BufferedWriter(new FileWriter(storageRPath.toString(), true))) {
 				writer1.write(toDatabase);
 				
@@ -81,25 +56,30 @@ public class Database {
 				System.out.println("\t\t\t\t             BOOKING SUCCESSFULLY CREATED          ");
 				System.out.println("\t\t\t\t===================================================");	
 			}
-//		} 
+		
 		catch (Exception e) 
 		{
 			System.err.println("Database write operation failed!");
 			e.printStackTrace();
 		}
-//			}catch(IOException e) {
-//				
-//			}
-//			if (Files.exists(absolutePath)) {
-//				List<String> allLines = Files.readAllLines(absolutePath);	
-//				if (!allLines.isEmpty()) {
-//					String lastLine = allLines.get(allLines.size() - 1);
-//					String[] bookingNumber = lastLine.split("\\|");
-//					num = Integer.parseInt(bookingNumber[0]);
-//					num++;
-//				}
 			
-	}
+			if (Files.exists(absolutePath)) {
+				List<String> allLines;
+				try {
+					allLines = Files.readAllLines(absolutePath);
+					if (!allLines.isEmpty()) {
+						String lastLine = allLines.get(allLines.size() - 1);
+						String[] bookingNumber = lastLine.split("\\|");
+						num = Integer.parseInt(bookingNumber[0]);
+						num++;
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+				
+			}
+	}	
 	
 	public void readDatabase(int num, String input) {
 		boolean exists = false;
@@ -107,17 +87,17 @@ public class Database {
 			String line;
 			while ((line = br.readLine()) != null) {
 				if (!line.trim().isEmpty()) {
-					String[] row = line.split("\\|", -1);
+					String[] column = line.split("\\|", -1);
 					
-					if (row.length >= 10) {
+					if (column.length >= 10) {
 						if (num == 1) {
-							displayCheckBooking(row);
+							displayCheckBooking(column);
 							exists = true;
 						} else if (num == 2 || num == 3) {
 							int col = (num == 2) ? 0 : 4; 
 							
-							if (row[col].toLowerCase().contains(input.toLowerCase())) {
-								displayCheckBooking(row);
+							if (column[col].toLowerCase().contains(input.toLowerCase())) {
+								displayCheckBooking(column);
 								exists = true;
 							}
 						}
@@ -133,17 +113,19 @@ public class Database {
 			System.out.println("\t\t\t\t\t Error reading database: " + e.getMessage());
 		}
 	}
+	
+	
 
-	private void displayCheckBooking(String[] row) {
+	private void displayCheckBooking(String[] column) {
 		System.out.println("\t\t\t\t--------------------------------------------------");
-		System.out.println("\t\t\t\t Booking ID: " + row[0]);
-		System.out.println("\t\t\t\t Check-in:  " + row[1] + "  |  Check-out: " + row[2]);
-		System.out.println("\t\t\t\t Room Type: " + row[3]);
-		System.out.println("\t\t\t\t Adults:    " + row[4]);
-		if (!row[5].isEmpty() && !row[5].equalsIgnoreCase("none")) {
-			System.out.println("\t\t\t\t Children:  " + row[5]);
+		System.out.println("\t\t\t\t Booking ID: " + column[0]);
+		System.out.println("\t\t\t\t Check-in:  " + column[1] + "  |  Check-out: " + column[2]);
+		System.out.println("\t\t\t\t Room Type: " + column[3]);
+		System.out.println("\t\t\t\t Adults:    " + column[4]);
+		if (!column[5].isEmpty() && !column[5].equalsIgnoreCase("none")) {
+			System.out.println("\t\t\t\t Children:  " + column[5]);
 		}
-		System.out.println("\t\t\t\t Passes:    Pool (" + row[8] + ") | Buffet (" + row[9] + ")");
+		System.out.println("\t\t\t\t Passes:    Pool (" + column[8] + ") | Buffet (" + column[9] + ")");
 		System.out.println("\t\t\t\t--------------------------------------------------\n");
 	}
 
@@ -159,6 +141,33 @@ public class Database {
 		} 
 		catch (IOException e) {
 			System.out.println("Could not find or read the file!");
+		}
+	}
+	
+	public void update() {
+		String rows;
+		List<String[]> allLine = new ArrayList<>();
+		try (BufferedReader read = new BufferedReader(new FileReader(absolutePath.toFile()))) {
+
+		    while ((rows = read.readLine()) != null) {
+		        String[] columns = rows.split("\\|");					
+		        allLine.add(columns);
+		        
+		        int numColumns = allLine.get(0).length;
+				int[] colWidths = new int[numColumns];
+				for(String[] lines: allLine) {
+					for(int i = 0; i<lines.length; i++) {
+						if (i < 	numColumns && lines.length > colWidths[i]) {
+							
+						}
+					}
+				}
+		        
+		        System.out.println(columns[3]);	
+		    }
+		    
+		} catch (IOException e) {
+		    e.printStackTrace(); // This prints the error if the file doesn't exist
 		}
 	}
 }

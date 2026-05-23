@@ -27,7 +27,7 @@ public class Main {
 		
 		switch(chooseMenu) {
 		case 1:
-			
+			db.update();
 		    create.writeDatabase(); 
 		break;
 		case 2: 

@@ -224,5 +224,6 @@ public class CreateBooking {
 		if(buffetPasses == -1) return;
 		
 		writeLine.writeLine(timeIn, timeOut, roomType, adultNames, childNames, totalAdult, totalChild, swimPasses, buffetPasses);
+		
 	}
 }
