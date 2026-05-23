@@ -11,7 +11,7 @@ public class CheckForBooking {
 		System.out.println("\t\t╚══════════════════════════════════════════════════════════════════════════════╝");
 
 		System.out.println("\t\t\t\t\t  1. View All Bookings");
-		System.out.println("\t\t\t\t\t  2. Search by Booking Number");
+		System.out.println("\t\t\t\t\t  2. Search by Booking ID");
 		System.out.println("\t\t\t\t\t  3. Search by Guest Name");
 		System.out.print("\t\t\t\tENTER HERE: ");
 		int num = scan.nextInt();
@@ -29,7 +29,7 @@ public class CheckForBooking {
 		
 		System.out.println();
 
-		checkDatabase.runDatabase(num, guestInfo);
+		checkDatabase.readDatabase(num, guestInfo);
     }
 }
 

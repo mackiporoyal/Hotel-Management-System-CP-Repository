@@ -6,12 +6,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+
+import finals.DatabaseLogic.Database;
+
 import java.io.*;
 
 public class UpdateStayBilling {
 	private String booknum;
 	private int indexarr;
 	private String changes;
+	Database update = new Database();
 	
 	public void booking(String book)
 	{
@@ -39,52 +43,10 @@ public class UpdateStayBilling {
 		}
 	public void display ()
 	{
-			BufferedReader buffre;
-			String li;
-			String [] bn = null;
-			try 
-			{
-				buffre = new BufferedReader(new FileReader("HotelDatabase.txt"));
-				while ((li = buffre.readLine()) != null)
-				{
-						String [] row = li.split("\\|");
-						if (row[0].trim().equals(booknum))
-						{
-							bn = row; 
-							break;
-						}
-				}
-				buffre.close();
-			}
-			catch (Exception e)
-			{
-				System.out.println("Error found while reading the textfile: " + e);
-			}
-			
-			//
-			for (head h : head.values())
-			{
-				System.out.print("     | " +h + " |  ");
-			}
-			System.out.println("\n");
-			System.out.printf("%12s %20s %17s %16s %19s %20s %18s %18s %18s %18s", bn);	
-			System.out.println("\n");
-			for (head h : head.values())
-			{
-				System.out.print("     | " +h + " |  ");
-			}	
-	if(indexarr >= 0 && indexarr < head.values().length)
-	{
-		head hd = head.values()[indexarr];
-	}
-	
-
-	
+		update.displayDatabase();
 
 		try {
-			BufferedWriter write = new BufferedWriter(new FileWriter("HotelDatabase.txt"));
-			write.write(changes);
-			
+			BufferedWriter write = new BufferedWriter(new FileWriter("HotelDatabase.txt"));			
 		}
 	catch (Exception e)
 		{

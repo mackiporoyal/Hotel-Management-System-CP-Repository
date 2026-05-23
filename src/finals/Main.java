@@ -1,6 +1,8 @@
 package finals;
 import java.util.Scanner;
 
+import finals.DatabaseLogic.Database;
+
 public class Main {
 	public static void main(String[] args) {		
 
@@ -10,7 +12,7 @@ public class Main {
 		RoomAvailability room = new RoomAvailability();
 		UpdateStayBilling update = new UpdateStayBilling();
 		CheckForBooking search = new CheckForBooking();
-		
+		Database db = new Database();
 		while(true) {
 		menu.displayMenu();
 		System.out.print("\t\t\t\tENTER HERE: ");
@@ -25,6 +27,7 @@ public class Main {
 		
 		switch(chooseMenu) {
 		case 1:
+			
 		    create.writeDatabase(); 
 		break;
 		case 2: 
@@ -38,10 +41,10 @@ public class Main {
 			System.out.println("\t\t╔══════════════════════════════════════════════════════════════════════════════╗");
 			System.out.println("\t\t║                           UPDATE STAY AND BILLING                            ║");
 			System.out.println("\t\t╚══════════════════════════════════════════════════════════════════════════════╝");
-			System.out.print("\t\t\t\tEnter Booking # : ");
-			String booknum = scan.nextLine().trim();
-			update.booking(booknum); 
+			System.out.print("\t\t\t\tEnter Booking # : \n");
 			update.display();
+			
+			
 			
 			System.out.println("\n\n\t\t\t\tChoose what to change (1-10): ");
 			int index = scan.nextInt() -1;
