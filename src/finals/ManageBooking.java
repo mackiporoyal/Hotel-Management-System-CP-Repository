@@ -2,11 +2,11 @@ package finals;
 import java.util.Scanner;
 import finals.DatabaseLogic.Database;
 
-public class CheckForBooking {
+public class ManageBooking {
     public void checkBooking() {
     	Scanner scan = new Scanner(System.in);
     	Database checkDatabase = new Database();
-    		System.out.println("\t\t╔══════════════════════════════════════════════════════════════════════════════╗");
+    	System.out.println("\t\t╔══════════════════════════════════════════════════════════════════════════════╗");
 		System.out.println("\t\t║                           CHECK EXISTING BOOKING                             ║");
 		System.out.println("\t\t╚══════════════════════════════════════════════════════════════════════════════╝");
 

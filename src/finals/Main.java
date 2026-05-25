@@ -11,7 +11,7 @@ public class Main {
 		CreateBooking create = new CreateBooking();
 		RoomAvailability room = new RoomAvailability();
 		UpdateStayBilling update = new UpdateStayBilling();
-		CheckForBooking search = new CheckForBooking();
+		ManageBooking search = new ManageBooking();
 		Database db = new Database();
 		while(true) {
 		menu.displayMenu();
@@ -26,14 +26,15 @@ public class Main {
 		}
 		
 		switch(chooseMenu) {
-		case 1:
-			db.update();
+		case 1:// Create Booking
+			
 		    create.writeDatabase(); 
 		break;
-		case 2: 
+		case 2: // Manage Booking
+			room.displayRoom();
 			search.checkBooking();
 		break;
-		case 3:
+		case 3: // Master List
 		    room.printHeader();
 		    room.displayRoom();
 		    break;
@@ -42,7 +43,6 @@ public class Main {
 			System.out.println("\t\t║                           UPDATE STAY AND BILLING                            ║");
 			System.out.println("\t\t╚══════════════════════════════════════════════════════════════════════════════╝");
 			System.out.print("\t\t\t\tEnter Booking # : \n");
-			update.display();
 			
 			
 			
@@ -52,8 +52,6 @@ public class Main {
 			scan.nextLine();
 			System.out.println("Enter changes: ");
 			String changes = scan.nextLine();
-			            
-			update.UpdateStayBill(index,changes);
 			
 		break;	
 		default: 

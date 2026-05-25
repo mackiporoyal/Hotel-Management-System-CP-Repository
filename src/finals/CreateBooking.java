@@ -5,14 +5,13 @@ import java.util.Scanner;
 import finals.DatabaseLogic.Database;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.YearMonth;
 
 public class CreateBooking {
 	
-
 	private LocalDate currentDate = LocalDate.now();
 	private int currentYear = currentDate.getYear();
 	private int currentMonthNumber = currentDate.getMonthValue();
-	private Month currentMonth = currentDate.getMonth();
 	private int currentDay = currentDate.getDayOfMonth();
 	
 	private int totalAdult;
@@ -92,6 +91,10 @@ public class CreateBooking {
 				System.out.print("\t\t\t\tEnter month (MM) : ");
 				monthIn = scan.nextInt();
 				if(monthIn == -1) return;
+				if(monthIn < 1 || monthIn > 12) {
+					System.out.println("\t\t\tInvalid month. Please enter a value between 1 and 12.");
+					continue;
+				}
 				if(monthIn < currentMonthNumber && yearIn <= currentYear) {
 					System.out.println("\t\t\tBackdating is not permitted. Please enter current or future dates.");
 					continue;
@@ -108,6 +111,13 @@ public class CreateBooking {
 				System.out.print("\t\t\t\tEnter day (DD) : ");
 				dayIn = scan.nextInt();
 				if(dayIn == -1) return;
+				
+				int maxDaysInMonth = YearMonth.of(yearIn, monthIn).lengthOfMonth();
+				if(dayIn < 1 || dayIn > maxDaysInMonth) {
+					System.out.println("\t\t\tInvalid day. This month has " + maxDaysInMonth + " days.");
+					continue;
+				}
+				
 				if(dayIn < currentDay && monthIn <= currentMonthNumber && yearIn <= currentYear) {
 					System.out.println("\t\t\tBackdating is not permitted. Please enter current or future dates.");
 					continue;
@@ -147,6 +157,10 @@ public class CreateBooking {
 				System.out.print("\t\t\t\tEnter month (MM) : ");
 				monthOut = scan.nextInt();
 				if(monthOut == -1) return;
+				if(monthOut < 1 || monthOut > 12) {
+					System.out.println("\t\t\tInvalid month. Please enter a value between 1 and 12.");
+					continue;
+				}
 				if(yearOut == yearIn && monthOut < monthIn) {
 					System.out.println("\t\t\tInvalid checkout month. Must be equal to or after check-in month.");
 					continue;
@@ -163,6 +177,13 @@ public class CreateBooking {
 				System.out.print("\t\t\t\tEnter day (DD) : ");
 				dayOut = scan.nextInt();
 				if(dayOut == -1) return;
+				
+				int maxDaysOutMonth = YearMonth.of(yearOut, monthOut).lengthOfMonth();
+				if(dayOut < 1 || dayOut > maxDaysOutMonth) {
+					System.out.println("\t\t\tInvalid day. This month has " + maxDaysOutMonth + " days.");
+					continue;
+				}
+				
 				if(yearOut == yearIn && monthOut == monthIn && dayOut <= dayIn) {
 					System.out.println("\t\t\tCheckout day must be after the check-in day.");
 					continue;

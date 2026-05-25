@@ -3,12 +3,11 @@ package finals;
 public class Menu {
 	enum eMenu{
 		CREATE_BOOKING("Create New Booking"),
-		SEARCH_BOOKING("Check Existing Booking"),
-		CHECK_ROOM_AVAILABILITY("Check Room Availability"),
-		MANAGE_STAY_AND_BILLING("Manage Stay and Billing"),
-		MASTER_RECORD("Master Record"); 
+		MANAGE_BOOKING("Manage Booking"),
+		CHECK_ROOM_AVAILABILITY("Check Room Availability");
+
 	 
-		private final String option; 
+		private String option; 
 	    eMenu(String option) {
 	    	this.option = option; 
 	    }

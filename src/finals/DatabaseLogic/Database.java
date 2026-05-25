@@ -3,7 +3,9 @@ package finals.DatabaseLogic;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalTime; // Imported for checking current time
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.BufferedReader;
@@ -29,6 +31,75 @@ public class Database {
 	
 	Path storageRPath = Paths.get("HotelDatabase.txt");
 	Path absolutePath = storageRPath.toAbsolutePath();
+
+	List<String[]> lines = new ArrayList<>();
+	String[] lastLine;
+	
+	private void readAllLine(boolean allLine) {
+		
+		try (BufferedReader br = new BufferedReader(new FileReader(absolutePath.toFile()))) {
+			String currentLine;
+			String[] line = null;
+			
+			while ((currentLine = br.readLine()) != null) {
+				line = currentLine.split("\\|",-1);
+				if(allLine == true) {
+					lines.add(line);	
+				}else if(allLine == false){ 
+			        lastLine = line;	
+				}	
+			}
+		}
+		catch(Exception e) {}
+	}
+	
+	
+	private void displayRoom() {
+		
+	}
+	
+	private void calendarToRoom(int status){
+		
+		
+	}
+	
+	public void roomToCalendar(){
+		
+	}
+	
+	private static void printCalendar(int year, int month, List<Integer> bookedDays) {
+        LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
+        
+        // getDayOfWeek().getValue() returns 1 (Monday) to 7 (Sunday). 
+        // We do % 7 to make Sunday = 0, Monday = 1, etc., for our grid.
+        int startDayOfWeek = firstDayOfMonth.getDayOfWeek().getValue() % 7; 
+        int daysInMonth = YearMonth.of(year, month).lengthOfMonth();
+
+        System.out.println("\t\t\t\tSun   Mon   Tue   Wed   Thu   Fri   Sat");
+        System.out.print("\t\t\t\t");
+
+        // Print empty spaces for days before the 1st of the month
+        for (int i = 0; i < startDayOfWeek; i++) {
+            System.out.print("      ");
+        }
+
+        // Print the days
+        for (int day = 1; day <= daysInMonth; day++) {
+            if (bookedDays.contains(day)) {
+                System.out.print(" XX   "); // Mark as booked
+            } else {
+                System.out.printf("%3d   ", day); // Print normal day
+            }
+
+            // If we reach Saturday (index 6), start a new line
+            if ((day + startDayOfWeek) % 7 == 0) {
+                System.out.println();
+                System.out.print("\t\t\t\t");
+            }
+        }
+        System.out.println();
+    }
+
 	
 	public void writeLine(String timeIn, String timeOut, String roomType, ArrayList<String> adultNames, ArrayList<String> childNames, int totalAdult, int totalChild, int swimPasses, int buffetPasses) 
 	{
@@ -43,11 +114,20 @@ public class Database {
 		this.buffetPasses = buffetPasses;
 		this.status = "ACTIVE";
 		
-		int num = 10000; 
-		String currentLine;
-		List<String[]> allLine = new ArrayList<>();
+		int num = 10000;
+		this.readAllLine(false);
+		
+		
+		if (Files.exists(absolutePath) && !lines.isEmpty()) {
 			
-			String toDatabase = num + "|" + this.timeIn  + "|" + this.timeOut + "|" + this.roomType + "|" + this.adultNames + "|" + this.childNames + "|" + this.totalAdult + "|" + this.totalChild + "|" + this.swimPasses + "|" + this.buffetPasses + "|" + this.status + "\n";
+		    String[] lastLine = lines.get(lines.size() - 1);
+		    
+		    String bookingNumberStr = lastLine[0];
+
+		    num = Integer.parseInt(bookingNumberStr);
+		    num++;
+		}
+		String toDatabase = num + "|" + this.timeIn  + "|" + this.timeOut + "|" + this.roomType + "|" + this.adultNames + "|" + this.childNames + "|" + this.totalAdult + "|" + this.totalChild + "|" + this.swimPasses + "|" + this.buffetPasses + "|" + this.status + "\n";
 			
 			try (BufferedWriter writer1 = new BufferedWriter(new FileWriter(storageRPath.toString(), true))) {
 				writer1.write(toDatabase);
@@ -63,23 +143,9 @@ public class Database {
 			e.printStackTrace();
 		}
 			
-			if (Files.exists(absolutePath)) {
-				List<String> allLines;
-				try {
-					allLines = Files.readAllLines(absolutePath);
-					if (!allLines.isEmpty()) {
-						String lastLine = allLines.get(allLines.size() - 1);
-						String[] bookingNumber = lastLine.split("\\|");
-						num = Integer.parseInt(bookingNumber[0]);
-						num++;
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
-				
-			}
 	}	
+	
+	
 	
 	public void readDatabase(int num, String input) {
 		boolean exists = false;
@@ -129,36 +195,21 @@ public class Database {
 		System.out.println("\t\t\t\t--------------------------------------------------\n");
 	}
 
-
-	public void displayDatabase() {
-		String currentLine;
-		List<String[]> tableData = new ArrayList<>();
-		try(BufferedReader readDatabase = new BufferedReader(new FileReader(absolutePath.toFile()))){
-			while((currentLine = readDatabase.readLine()) !=null) {
-			System.out.println(currentLine);	
-			}
-			
-		} 
-		catch (IOException e) {
-			System.out.println("Could not find or read the file!");
-		}
-	}
 	
-	public void update() {
+	public void displayDatabase() {
 		String rows;
-		List<String[]> allLine = new ArrayList<>();
 		try (BufferedReader read = new BufferedReader(new FileReader(absolutePath.toFile()))) {
-
+			this.readAllLine(true);
 		    while ((rows = read.readLine()) != null) {
 		        String[] columns = rows.split("\\|");					
-		        allLine.add(columns);
+		        lines.add(columns);
 		        
-		        int numColumns = allLine.get(0).length;
+		        int numColumns = lines.get(0).length;
 				int[] colWidths = new int[numColumns];
-				for(String[] lines: allLine) {
+				for(String[] lines: lines) {
 					for(int i = 0; i<lines.length; i++) {
 						if (i < 	numColumns && lines.length > colWidths[i]) {
-							
+							colWidths[i] = lines[i].length();
 						}
 					}
 				}
