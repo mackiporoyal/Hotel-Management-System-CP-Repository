@@ -1,3 +1,4 @@
+
 package finals;
 
 public class RoomAvailability {

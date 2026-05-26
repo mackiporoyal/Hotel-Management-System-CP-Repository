@@ -27,7 +27,7 @@ public class Database {
 	private int totalChild;
 	private int swimPasses;
 	private int buffetPasses;
-	private String status;
+	private String status; // Added status field
 	
 	Path storageRPath = Paths.get("HotelDatabase.txt");
 	Path absolutePath = storageRPath.toAbsolutePath();
@@ -132,9 +132,8 @@ public class Database {
 			try (BufferedWriter writer1 = new BufferedWriter(new FileWriter(storageRPath.toString(), true))) {
 				writer1.write(toDatabase);
 				
-				System.out.println("\t\t\t\t===================================================");
-				System.out.println("\t\t\t\t             BOOKING SUCCESSFULLY CREATED          ");
-				System.out.println("\t\t\t\t===================================================");	
+				// Rebuild the line
+				updatedLines.add(String.join("|", tokens));
 			}
 		
 		catch (Exception e) 
