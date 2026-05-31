@@ -1,14 +1,15 @@
-package finals;
+package finals.Booking;
 
 public class Menu {
 	enum eMenu{
-		CREATE_BOOKING("Create New Booking"),
-		MANAGE_BOOKING("Manage Booking"),
-		CHECK_ROOM_AVAILABILITY("Check Room Availability");
+		NEW_BOOKING("New Booking"),
+		CHECK_BOOKING("Check Booking"),
+		CHECK_AVAILABILITY("Check Availability"),
+		FOLIO_MANAGEMENT("Folio Management"),;
 
-	 
 		private String option; 
-	    eMenu(String option) {
+	    
+		eMenu(String option) {
 	    	this.option = option; 
 	    }
 	    
@@ -23,12 +24,12 @@ public class Menu {
 		System.out.println("\t\t║   ██      ██  ████████  ██        ██████    ███████   ███    ███  ████████   ║");
 		System.out.println("\t\t║   ██      ██  ██        ██       ██    ██  ██     ██  ████  ████  ██         ║");
 		System.out.println("\t\t║   ██  ██  ██  ██████    ██       ██        ██     ██  ██ ████ ██  ██████     ║");
-		System.out.println("\t\t║   ██████████  ██        ██       ██    ██  ██     ██  ██  ██  ██  ██         ║");
+		System.out.println("\t\t║   ██████████  ██    	    ██       ██    ██  ██     ██  ██  ██  ██  ██         ║");
 		System.out.println("\t\t║    ██    ██   ████████  ████████  ██████    ███████   ██      ██  ████████   ║");
 		System.out.println("\t\t║                                                                              ║");
 		System.out.println("\t\t╠══════════════════════════════════════════════════════════════════════════════╣");
 		System.out.println("\t\t║                                                                              ║");
-		System.out.println("\t\t║                 WELCOME TO HOTEL MANAGEMENT CENTRAL SYSTEM                   ║");
+		System.out.println("\t\t║                     WELCOME TO HOTEL MANAGEMENT SYSTEM                       ║");
 		System.out.println("\t\t║                         - System Ready to Use -                              ║");
 		System.out.println("\t\t║                                                                              ║");
 		System.out.println("\t\t╚══════════════════════════════════════════════════════════════════════════════╝");
