@@ -3,8 +3,9 @@ package start;
 import java.util.Scanner;
 
 import finals.Booking.Menu;
-import finals.Booking.RoomAvailability;
-import finals.Booking.View_Booking.ManageBooking;
+import finals.Booking.Check_Booking.ManageBooking;
+import finals.Booking.RoomAvailability.RoomAvailability;
+import finals.Booking.RoomAvailability.RoomController;
 import finals.DatabaseLogic.Database;
 import finals.Receptionist.NewBooking;
 import finals.Cashier.Cashier;
@@ -15,12 +16,15 @@ public class Main { // FIX 1: Removed "extends Database"
 		
 		Scanner scan = new Scanner(System.in);
 		Database db = new Database();	
-
-		RoomAvailability masterRoomData = new RoomAvailability(); 
+		NewBooking newBooking = new NewBooking();
+		RoomAvailability roomAvailability = new RoomAvailability(); 
+		RoomController room = new RoomController();
 		Menu menu = new Menu();
 		
 		ManageBooking search = new ManageBooking();
 		Cashier cash = new Cashier(db); 
+		
+		
 		while(true) {
 			menu.displayMenu();
 			System.out.print("\t\t\t\tENTER HERE: ");
@@ -35,6 +39,7 @@ public class Main { // FIX 1: Removed "extends Database"
 			
 			switch(chooseMenu) {
 				case 1: // Create Booking
+					newBooking.displayNewBooking();
 					break;
 					
 				case 2: // Manage Booking
@@ -42,7 +47,7 @@ public class Main { // FIX 1: Removed "extends Database"
 					break;
 					
 				case 3: 
-					masterRoomData.getRoomAvailability(); 
+					room.startMenu();
 					break;
 					
 				default: 

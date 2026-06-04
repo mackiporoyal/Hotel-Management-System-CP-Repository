@@ -1,8 +1,8 @@
-package finals.Booking.View_Booking;
+package finals.Booking.Check_Booking;
 
 import java.util.Scanner;
 
-import finals.Booking.Logic.BookingManager;
+import finals.Booking.BookingManager;
 import finals.DatabaseLogic.Database;
 
 public class ManageBooking extends BookingManager{

@@ -78,7 +78,6 @@ public class Database {
                     
                     roomArray[row][col] = 'X'; // <-- THE CASHIER LOCKS THE ROOM HERE!
                     return;
-                    
                 }
                 current++;
             }
