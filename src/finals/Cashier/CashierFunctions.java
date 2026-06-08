@@ -1,4 +1,4 @@
-package finals.Cashier.Logic;
+package finals.Cashier;
 
 import java.util.List;
 import finals.DatabaseLogic.Database;

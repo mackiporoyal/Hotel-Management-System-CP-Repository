@@ -1,0 +1,46 @@
+201|Standard|VR
+202|Standard|VR
+203|Standard|VR
+204|Standard|VR
+205|Standard|VR
+206|Standard|VR
+207|Standard|VR
+208|Standard|VR
+209|Standard|VR
+210|Standard|VR
+211|Standard|VR
+212|Standard|VR
+213|Standard|VR
+214|Standard|VR
+215|Standard|VR
+216|Standard|VD
+301|Deluxe|VR
+302|Deluxe|VR
+303|Deluxe|VR
+304|Deluxe|VR
+305|Deluxe|VR
+306|Deluxe|VR
+307|Deluxe|VR
+308|Deluxe|VR
+309|Deluxe|VR
+310|Deluxe|VR
+311|Deluxe|VR
+312|Deluxe|VR
+313|Deluxe|VR
+314|Deluxe|VR
+315|Deluxe|VR
+316|Deluxe|VR
+401|Junior Suite|VR
+402|Junior Suite|VR
+403|Junior Suite|VR
+404|Junior Suite|VR
+405|Junior Suite|VR
+406|Junior Suite|VR
+407|Junior Suite|VR
+408|Junior Suite|VR
+501|Suite|VR
+502|Suite|VR
+503|Suite|VR
+504|Suite|VR
+601|Penthouse|VR
+602|Penthouse|VR

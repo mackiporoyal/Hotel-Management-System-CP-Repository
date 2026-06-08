@@ -1,7 +1,6 @@
 package finals.Receptionist;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -35,34 +34,54 @@ public class NewBooking extends BookingManager {
     private int swimPasses;
     private int buffetPasses;
 
+    private void printRow(String text) {
+        int spaces = 120 - text.length();
+        System.out.println("\t\t║" + text + " ".repeat(Math.max(0, spaces)) + "║");
+    }
+
     public void displayNewBooking() { 
         Scanner scan = new Scanner(System.in);
+        String border = "═".repeat(120);
 
         adultNames.clear();
         childNames.clear();
         
-        System.out.println("\t\t╔══════════════════════════════════════════════════════════════════════════════╗");
-        System.out.println("\t\t║ -1 Back                        NEW BOOKING                                   ║");
-        System.out.println("\t\t╚══════════════════════════════════════════════════════════════════════════════╝");
+        System.out.println("\n\t\t╔" + border + "╗");
+        printRow("");
         
-        // adult total is required to proceed with booking, child total can be 0
+        String title = "HOTEL MANAGEMENT SYSTEM - NEW BOOKING";
+        int padL = (120 - title.length()) / 2;
+        printRow(" ".repeat(padL) + title);
+        
+        String subTitle = "[ Type '-1' at any prompt to cancel ]";
+        int subPadL = (120 - subTitle.length()) / 2;
+        printRow(" ".repeat(subPadL) + subTitle);
+        
+        printRow("");
+        System.out.println("\t\t╠" + border + "╣");
+        
+        // --- 1. GUEST COUNT ---
+        printRow("      [ 1. GUEST COUNT ]");
+        System.out.println("\t\t╚" + border + "╝");
+        
         while(true) {
             try {
-                System.out.print("\t\t║\t\tHow many adults? : ");
+                System.out.print("\t\t          ► Number of Adults       : ");
                 totalAdult = scan.nextInt();
+                
                 if (totalAdult < -1) {
-                    System.out.println("\t\t\tNumber of adults cannot be negative. Please enter a valid number.");
+                    System.out.println("\t\t            [!] Invalid. Number cannot be negative.");
                     continue;
                 }
                 if(totalAdult == 0) {
-                    System.out.println("\t\t\tAt least one adult is required for a booking. Please");
+                    System.out.println("\t\t            [!] Invalid. At least one adult is required.");
                     continue;
                 }
                 scan.nextLine(); 
                 break;
                 
             } catch (Exception e) {
-                System.out.println("\t\t\tInvalid input. Please enter a valid number.");
+                System.out.println("\t\t            [!] Invalid input. Please enter a number.");
                 scan.nextLine(); 
             }
         }
@@ -70,182 +89,204 @@ public class NewBooking extends BookingManager {
         
         while(true) {
             try {
-                System.out.print("\t\t\t\tHow many children? : ");
+                System.out.print("\t\t          ► Number of Children     : ");
                 totalChild = scan.nextInt();
                 scan.nextLine(); 
                 break;
                 
             } catch (Exception e) {
-                System.out.println("\t\t\tInvalid input. Please enter a valid number.");
+                System.out.println("\t\t            [!] Invalid input. Please enter a number.");
                 scan.nextLine();
             }
         }
         if(totalChild == -1) return;
         
-        System.out.println("\t\t\t═══════════════════════════════════════════════════════════════════");
-        System.out.println("\t\t\t\t\t\tTotal Guest: " + (totalAdult + totalChild));
-        System.out.println("\t\t\t═══════════════════════════════════════════════════════════════════\n");
+        System.out.println("\n\t\t          * Total Guests Booked    : " + (totalAdult + totalChild));
    
-        // --- 2. ASK FOR CHECK-IN DATES ---
-        System.out.println("\t\t\t\tDate of Check In : ");
+        // --- 2. CHECK-IN DATES ---
+        System.out.println("\n\t\t╔" + border + "╗");
+        printRow("      [ 2. CHECK-IN DATE ]");
+        System.out.println("\t\t╚" + border + "╝");
 
         while(true) {
             try {
-                System.out.print("\t\t\t\tEnter year (YYYY) : ");
+                System.out.print("\t\t          ► Enter Year  (YYYY)     : ");
                 yearIn = scan.nextInt();
                 scan.nextLine(); 
+                
                 if(yearIn == -1) return;
                 if(yearIn < currentYear) {
-                    System.out.println("\t\t\tBackdating is not permitted. Please enter current dates.");
+                    System.out.println("\t\t            [!] Backdating is not permitted.");
                     continue;
                 }
                 break;
             } catch (Exception e) {
-                System.out.println("\t\t\tInvalid input. Please enter a valid 4-digit year.");
+                System.out.println("\t\t            [!] Invalid input. Enter a 4-digit year.");
                 scan.nextLine();
             }
         }
         
         while(true) {
             try {
-                System.out.print("\t\t\t\tEnter month (MM) : ");
+                System.out.print("\t\t          ► Enter Month (MM)       : ");
                 monthIn = scan.nextInt();
                 scan.nextLine(); 
+                
                 if(monthIn == -1) return;
                 if(monthIn < 1 || monthIn > 12) {
-                    System.out.println("\t\t\tInvalid month. Please enter a value between 1 and 12.");
+                    System.out.println("\t\t            [!] Invalid month (1-12 only).");
                     continue;
                 }
                 if(monthIn < currentMonthNumber && yearIn <= currentYear) {
-                    System.out.println("\t\t\tBackdating is not permitted.");
+                    System.out.println("\t\t            [!] Backdating is not permitted.");
                     continue;
                 }
                 break;
             } catch (Exception e) {
-                System.out.println("\t\t\tInvalid input. Please enter a valid month (1-12).");
+                System.out.println("\t\t            [!] Invalid input. Enter a valid month.");
                 scan.nextLine();
             }
         }
         
         while(true) {
             try {
-                System.out.print("\t\t\t\tEnter day (DD) : ");
+                System.out.print("\t\t          ► Enter Day   (DD)       : ");
                 dayIn = scan.nextInt();
                 scan.nextLine(); 
+                
                 if(dayIn == -1) return;
                 
                 int maxDaysInMonth = YearMonth.of(yearIn, monthIn).lengthOfMonth();
                 if(dayIn < 1 || dayIn > maxDaysInMonth) {
-                    System.out.println("\t\t\tInvalid day. This month has " + maxDaysInMonth + " days.");
+                    System.out.println("\t\t            [!] Invalid. This month has " + maxDaysInMonth + " days.");
                     continue;
                 }
                 
                 if(dayIn < currentDay && monthIn <= currentMonthNumber && yearIn <= currentYear) {
-                    System.out.println("\t\t\tBackdating is not permitted.");
+                    System.out.println("\t\t            [!] Backdating is not permitted.");
                     continue;
                 }
                 break;
             } catch (Exception e) {
-                System.out.println("\t\t\tInvalid input.");
+                System.out.println("\t\t            [!] Invalid input.");
                 scan.nextLine();
             }
         }
     
         timeIn = String.format("%d-%02d-%02d", yearIn, monthIn, dayIn);
         
-        // --- 3. ASK FOR CHECK-OUT DATES ---
-        System.out.println("\t\t\t\tDate of Check Out : ");
+        // --- 3. CHECK-OUT DATES ---
+        System.out.println("\n\t\t╔" + border + "╗");
+        printRow("      [ 3. CHECK-OUT DATE ]");
+        System.out.println("\t\t╚" + border + "╝");
+
         while(true) {
             try {
-                System.out.print("\t\t\t\tEnter year (YYYY) : ");
+                System.out.print("\t\t          ► Enter Year  (YYYY)     : ");
                 yearOut = scan.nextInt();
                 scan.nextLine();
+                
                 if(yearOut == -1) return;
                 if(yearOut < yearIn) {
-                    System.out.println("\t\t\tInvalid checkout year. Must match or be after check-in year.");
+                    System.out.println("\t\t            [!] Checkout year must be after check-in year.");
                     continue;
                 }
                 break;
             } catch (Exception e) {
-                System.out.println("\t\t\tInvalid input.");
+                System.out.println("\t\t            [!] Invalid input.");
                 scan.nextLine();
             }
         }
             
         while(true) { 
             try {
-                System.out.print("\t\t\t\tEnter month (MM) : ");
+                System.out.print("\t\t          ► Enter Month (MM)       : ");
                 monthOut = scan.nextInt();
                 scan.nextLine(); 
+                
                 if(monthOut == -1) return;
                 if(monthOut < 1 || monthOut > 12) {
-                    System.out.println("\t\t\tInvalid month.");
+                    System.out.println("\t\t            [!] Invalid month.");
                     continue;
                 }
                 if(yearOut == yearIn && monthOut < monthIn) {
-                    System.out.println("\t\t\tInvalid checkout month.");
+                    System.out.println("\t\t            [!] Checkout month cannot be before check-in.");
                     continue;
                 }
                 break;
             } catch (Exception e) {
-                System.out.println("\t\t\tInvalid input.");
+                System.out.println("\t\t            [!] Invalid input.");
                 scan.nextLine();
             }
         }
         
         while(true) {
             try {
-                System.out.print("\t\t\t\tEnter day (DD) : ");
+                System.out.print("\t\t          ► Enter Day   (DD)       : ");
                 dayOut = scan.nextInt();
                 scan.nextLine();
+                
                 if(dayOut == -1) return;
                 
                 int maxDaysOutMonth = YearMonth.of(yearOut, monthOut).lengthOfMonth();
                 if(dayOut < 1 || dayOut > maxDaysOutMonth) {
-                    System.out.println("\t\t\tInvalid day. This month has " + maxDaysOutMonth + " days.");
+                    System.out.println("\t\t            [!] Invalid. This month has " + maxDaysOutMonth + " days.");
                     continue;
                 }
                 
                 if(yearOut == yearIn && monthOut == monthIn && dayOut <= dayIn) {
-                    System.out.println("\t\t\tCheckout day must be after the check-in day.");
+                    System.out.println("\t\t            [!] Checkout day must be after check-in day.");
                     continue;
                 }
                 break;
             } catch (Exception e) {
-                System.out.println("\t\t\tInvalid input.");
+                System.out.println("\t\t            [!] Invalid input.");
                 scan.nextLine();
             }
         }
         timeOut = String.format("%d-%02d-%02d", yearOut, monthOut, dayOut);
        
         // --- 4. GUEST NAMES ---
+        System.out.println("\n\t\t╔" + border + "╗");
+        printRow("      [ 4. GUEST REGISTRATION ]");
+        System.out.println("\t\t╚" + border + "╝");
+
         for (int i = 1; i <= totalAdult; i++) {
-            System.out.print("\t\t\t\tEnter name for Adult " + i + ": ");
+            System.out.print("\t\t          ► Name for Adult " + i + "       : ");
             String name = scan.nextLine();
             if(name.equals("-1")) return;
             adultNames.add(name); 
         }
             
         for (int i = 1; i <= totalChild; i++) {
-            System.out.print("\t\t\t\tEnter name for Child " + i + ": ");
+            System.out.print("\t\t          ► Name for Child " + i + "       : ");
             String name = scan.nextLine();
             if(name.equals("-1")) return;
             childNames.add(name); 
         }
         
+        System.out.println("\n\t\t╔" + border + "╗");
+        printRow("      [ 5. ROOM SELECTION ]");
+        printRow("");
+        printRow("          * Opening Room Availability Viewer...");
+        printRow("          * Review the floor plan, then press -1 to exit and select.");
+        System.out.println("\t\t╚" + border + "╝");
+        
         // --- 5. LOGIC FOR ROOM AVAILABILITY ---
-        System.out.println("\n\t\t\t═══════════════════════════════════════════════════════════════════");
-        System.out.println("\t\t\t\t\t\tROOM SELECTION");
-        System.out.println("\t\t\t═══════════════════════════════════════════════════════════════════");
-        System.out.println("\t\t\tOpening Room Availability Viewer...");
-        System.out.println("\t\t\t(Press -1 to exit the viewer when you are ready to pick a room)\n");
+        boolean proceedWithBooking = roomViewer.startMenu(true); 
         
-        roomViewer.startMenu();
+        if (!proceedWithBooking) {
+            return; 
+        }
         
-        // --- STRICT ROOM TYPE VALIDATION ---
+        System.out.println("\n\t\t╔" + border + "╗");
+        printRow("      [ ROOM SELECTION CONTINUED ]");
+        System.out.println("\t\t╚" + border + "╝");
+
         while(true) {
-            System.out.print("\n\t\t\t\tEnter desired Room Type (Standard, Deluxe, Junior Suite, Suite, Penthouse): ");
+            System.out.print("\t\t          ► Desired Room Type      : ");
             roomType = scan.nextLine().trim();
+            
             if(roomType.equals("-1")) return;
             
             String checkType = roomType.toLowerCase();
@@ -256,77 +297,57 @@ public class NewBooking extends BookingManager {
                 roomType = roomType.substring(0, 1).toUpperCase() + roomType.substring(1).toLowerCase();
                 if (checkType.equals("junior suite") || checkType.equals("jr suite")) roomType = "Junior Suite";
                 break; 
-            } else {	
-                System.out.println("\t\t\t[!] Invalid entry. Please type exactly: Standard, Deluxe, Junior Suite, Suite, or Penthouse.");
+            } else {
+                System.out.println("\t\t            [!] Must be exactly: Standard, Deluxe, Junior Suite, Suite, Penthouse.");
             }
         }
-        
-        // --- STRICT ROOM NUMBER & OCCUPANCY VALIDATION ---
+
         while(true) {
             try {
-                System.out.print("\t\t\t\tEnter exact Room Number (e.g., 201, 305): ");
+                System.out.print("\t\t          ► Exact Room Number      : ");
                 roomNumber = scan.nextInt();
                 scan.nextLine(); 
                 
                 String typeLower = roomType.toLowerCase();
                 boolean isValidFloor = false;
 
-                // 1. Check if the number matches the chosen floor
-                if (typeLower.contains("standard") && roomNumber >= 201 && roomNumber <= 208) {
+                if (typeLower.contains("standard") && roomNumber >= 201 && roomNumber <= 216) {
                     isValidFloor = true;
-                } else if (typeLower.contains("deluxe") && roomNumber >= 301 && roomNumber <= 308) {
+                } else if (typeLower.contains("deluxe") && roomNumber >= 301 && roomNumber <= 316) {
                     isValidFloor = true;
-                } else if ((typeLower.contains("junior") || typeLower.contains("jr")) && roomNumber >= 401 && roomNumber <= 404) {
+                } else if ((typeLower.contains("junior") || typeLower.contains("jr")) && roomNumber >= 401 && roomNumber <= 408) {
                     isValidFloor = true;
-                } else if (typeLower.contains("suite") && !typeLower.contains("junior") && !typeLower.contains("jr") && roomNumber >= 501 && roomNumber <= 502) {
+                } else if (typeLower.contains("suite") && !typeLower.contains("junior") && !typeLower.contains("jr") && roomNumber >= 501 && roomNumber <= 504) {
                     isValidFloor = true;
-                } else if (typeLower.contains("penthouse") && roomNumber == 601) {
+                } else if (typeLower.contains("penthouse") && roomNumber >= 601 && roomNumber <= 602) {
                     isValidFloor = true;
                 }
 
                 if (!isValidFloor) {
-                    System.out.println("\t\t\t[!] Mismatch: Room " + roomNumber + " is not a valid " + roomType + " room.");
-                    continue; // Make them try again
+                    System.out.println("\t\t            [!] Mismatch: Room " + roomNumber + " is not a valid " + roomType + " room.");
+                    continue; 
                 }
-
-                // 2. Check if the room is ALREADY BOOKED [X] in the database
-                boolean isOccupied = false;
-                List<String[]> records = this.readAllLines(); 
-                for (String[] row : records) {
-                    if (row.length >= 13 && row[12].trim().equalsIgnoreCase("ACTIVE")) {
-                        try {
-                            int bookedRoom = Integer.parseInt(row[4].trim());
-                            if (bookedRoom == roomNumber) {
-                                isOccupied = true;
-                                break;
-                            }
-                        } catch (Exception ignored) {}
-                    }
-                }
-
-                if (isOccupied) {
-                    System.out.println("\t\t\t[!] Sorry! Room " + roomNumber + " is already occupied [X]. Please choose a different room.");
-                    continue; // Make them try again
-                }
-
-                // If it passes both the Floor Check and the Occupancy Check, break the loop!
                 break;
 
             } catch (Exception e) {
-                System.out.println("\t\t\tInvalid input. Please enter a valid room number.");
+                System.out.println("\t\t            [!] Invalid input. Please enter a valid room number.");
                 scan.nextLine();
             }
         }
         
         // --- 6. AMENITIES ---
+        System.out.println("\n\t\t╔" + border + "╗");
+        printRow("      [ 6. ADD-ON AMENITIES ]");
+        System.out.println("\t\t╚" + border + "╝");
+
         while(true) {
             try {
-                System.out.print("\t\t\t\tHow many Pool Passes? : ");
+                System.out.print("\t\t          ► Number of Pool Passes  : ");
                 swimPasses = scan.nextInt();
                 scan.nextLine(); 
                 break;
             } catch (Exception e) {
-                System.out.println("\t\t\tInvalid input. Please enter a number.");
+                System.out.println("\t\t            [!] Invalid input. Please enter a number.");
                 scan.nextLine();
             }
         }
@@ -334,12 +355,12 @@ public class NewBooking extends BookingManager {
         
         while(true) {
             try {
-                System.out.print("\t\t\t\tHow many Buffet Passes? : ");
+                System.out.print("\t\t          ► Number of Buffet Passes: ");
                 buffetPasses = scan.nextInt();
                 scan.nextLine(); 
                 break;
             } catch (Exception e) {
-                System.out.println("\t\t\tInvalid input. Please enter a number.");
+                System.out.println("\t\t            [!] Invalid input. Please enter a number.");
                 scan.nextLine();
             }
         }

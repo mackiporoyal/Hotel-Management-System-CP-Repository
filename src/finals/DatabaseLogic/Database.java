@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Database {
+	private final Path roomStoragePath = Paths.get("src/finals/DatabaseLogic/RoomDatabase.txt");
     private final Path storageRPath = Paths.get("src/finals/DatabaseLogic/HotelDatabase.txt");
     private final List<String[]> lines = new ArrayList<>();
 
@@ -29,10 +30,6 @@ public class Database {
         return lines;
     }
 
-
-
-
-    // 3. Raw Overwrite: Overwrites the database file entirely (used for updates)
     public void overwriteDatabase(List<String[]> updatedLines) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(storageRPath.toFile(), false))) {
             for (String[] line : updatedLines) {
@@ -43,9 +40,7 @@ public class Database {
         }
     }
 
- 
-    // create booking logic mostlyly uses this to generate the next booking ID and to next line to the database or text file
-    public int getNextBookingId() {
+     public int getNextBookingId() {
         readAllLines();
         if (lines.isEmpty()) {
             return 1;
@@ -77,6 +72,38 @@ public class Database {
                 if (current == targetRoom) {
                     
                     roomArray[row][col] = 'X'; // <-- THE CASHIER LOCKS THE ROOM HERE!
+                    return;
+                }
+                current++;
+            }
+        }
+    }
+    public List<String[]> readRoomDatabase() {
+        List<String[]> roomLines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(roomStoragePath.toFile()))) {
+            String currentLine;
+            while ((currentLine = br.readLine()) != null) {
+                if (!currentLine.trim().isEmpty()) {
+                    roomLines.add(currentLine.split("\\|", -1));
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("[Database Error] Failed to read Room Database: " + e.getMessage());
+        }
+        return roomLines;
+    }
+
+    // Upgraded to use String[][] and accept a custom status (like "VR" or "VD")
+ // UPGRADED to accept String[][] instead of char[][]
+    public void confirmBookingAndLockRoom(String[][] roomArray, int startRoomNum, int targetRoom, String status) {
+        int current = startRoomNum;
+        
+        for (int row = 0; row < roomArray.length; row++) {
+            if (roomArray[row][0].equals("■")) continue; // Skip hidden rows
+            
+            for (int col = 0; col < roomArray[row].length; col++) {
+                if (current == targetRoom) {
+                    roomArray[row][col] = status; // Drops "S", "VD", etc. into the array
                     return;
                 }
                 current++;

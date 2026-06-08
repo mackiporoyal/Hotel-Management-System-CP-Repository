@@ -8,7 +8,7 @@ import finals.Booking.RoomAvailability.RoomAvailability;
 import finals.Booking.RoomAvailability.RoomController;
 import finals.DatabaseLogic.Database;
 import finals.Receptionist.NewBooking;
-import finals.Cashier.Cashier;
+import finals.Cashier.CashierController;
 
 public class Main { // FIX 1: Removed "extends Database"
 	
@@ -22,7 +22,7 @@ public class Main { // FIX 1: Removed "extends Database"
 		Menu menu = new Menu();
 		
 		ManageBooking search = new ManageBooking();
-		Cashier cash = new Cashier(db); 
+		CashierController cash = new CashierController(); 
 		
 		
 		while(true) {
@@ -47,7 +47,7 @@ public class Main { // FIX 1: Removed "extends Database"
 					break;
 					
 				case 3: 
-					room.startMenu();
+					room.startMenu(false);
 					break;
 					
 				default: 
