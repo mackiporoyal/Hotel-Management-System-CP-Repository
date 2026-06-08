@@ -1,20 +1,20 @@
-package finals.DatabaseLogic;
+package finals.database;
 
+import finals.core.config.ProgramConstants;
 import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Database {
-	private final Path roomStoragePath = Paths.get("src/finals/DatabaseLogic/RoomDatabase.txt");
-    private final Path storageRPath = Paths.get("src/finals/DatabaseLogic/HotelDatabase.txt");
+public class DatabaseHandler implements ProgramConstants {
+    private final Path roomStoragePath = Paths.get(ROOM_DB_PATH);
+    private final Path storageRPath = Paths.get(HOTEL_DB_PATH);
     private final List<String[]> lines = new ArrayList<>();
 
     public List<String[]> getLines() {
         return lines;
     }
     
-    // 1. Raw Read: Pulls everything fresh from the file into memory
     public List<String[]> readAllLines() {
         lines.clear();
         try (BufferedReader br = new BufferedReader(new FileReader(storageRPath.toFile()))) {
@@ -40,11 +40,9 @@ public class Database {
         }
     }
 
-     public int getNextBookingId() {
+    public int getNextBookingId() {
         readAllLines();
-        if (lines.isEmpty()) {
-            return 1;
-        }
+        if (lines.isEmpty()) return 1;
         try {
             String lastIdStr = lines.get(lines.size() - 1)[0].trim();
             return Integer.parseInt(lastIdStr) + 1;
@@ -60,24 +58,7 @@ public class Database {
             System.err.println("[Database Error] Failed to write line: " + e.getMessage());
         }
     }   
-    
- // You can place this method in your RoomAvailability class or Database class
-    public void confirmBookingAndLockRoom(char[][] roomArray, int startRoomNum, int targetRoom) {
-        int current = startRoomNum;
-        
-        for (int row = 0; row < roomArray.length; row++) {
-            if (roomArray[row][0] == '■') continue; // Skip hidden rows
-            
-            for (int col = 0; col < roomArray[row].length; col++) {
-                if (current == targetRoom) {
-                    
-                    roomArray[row][col] = 'X'; // <-- THE CASHIER LOCKS THE ROOM HERE!
-                    return;
-                }
-                current++;
-            }
-        }
-    }
+
     public List<String[]> readRoomDatabase() {
         List<String[]> roomLines = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(roomStoragePath.toFile()))) {
@@ -93,22 +74,17 @@ public class Database {
         return roomLines;
     }
 
-    // Upgraded to use String[][] and accept a custom status (like "VR" or "VD")
- // UPGRADED to accept String[][] instead of char[][]
     public void confirmBookingAndLockRoom(String[][] roomArray, int startRoomNum, int targetRoom, String status) {
         int current = startRoomNum;
-        
         for (int row = 0; row < roomArray.length; row++) {
-            if (roomArray[row][0].equals("■")) continue; // Skip hidden rows
-            
+            if (roomArray[row][0].equals("■")) continue;
             for (int col = 0; col < roomArray[row].length; col++) {
                 if (current == targetRoom) {
-                    roomArray[row][col] = status; // Drops "S", "VD", etc. into the array
+                    roomArray[row][col] = status;
                     return;
                 }
                 current++;
             }
         }
     }
-    
 }

@@ -1,8 +1,7 @@
-package finals.Booking.RoomAvailability;
+package finals.features.room;
 
-import finals.DatabaseLogic.Database;
+import finals.database.DatabaseHandler;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.time.LocalDate;
 import java.util.List;
@@ -43,18 +42,14 @@ public class RoomAvailability {
         {"S"},
     };
 
-    // Dynamic database folder base path compilation
-    private final String dbFolder = System.getProperty("user.dir") + File.separator + "src" + 
-                                   File.separator + "finals" + File.separator + "DatabaseLogic" + File.separator;
-    private final String hotelDbPath = dbFolder + "HotelDatabase.txt";
+    private final DatabaseHandler dbHandler = new DatabaseHandler();
 
     public RoomAvailability() {
         syncWithDatabase();
     }
 
     public void syncWithDatabase() {
-        Database db = new Database();
-        List<String[]> records = db.readRoomDatabase(); 
+        List<String[]> records = dbHandler.readRoomDatabase(); 
 
         for (String[] record : records) {
             if (record.length >= 3) { 
@@ -64,19 +59,19 @@ public class RoomAvailability {
                     String status = record[2].trim().toUpperCase(); 
                     
                     if (roomType.contains("standard") && roomNumber >= 201 && roomNumber <= 216) {
-                        db.confirmBookingAndLockRoom(roomsStandard, 201, roomNumber, status);
+                        dbHandler.confirmBookingAndLockRoom(roomsStandard, 201, roomNumber, status);
                     } 
                     else if (roomType.contains("deluxe") && roomNumber >= 301 && roomNumber <= 316) {
-                        db.confirmBookingAndLockRoom(roomsDeluxe, 301, roomNumber, status);
+                        dbHandler.confirmBookingAndLockRoom(roomsDeluxe, 301, roomNumber, status);
                     } 
                     else if ((roomType.contains("junior") || roomType.contains("jr")) && roomNumber >= 401 && roomNumber <= 408) {
-                        db.confirmBookingAndLockRoom(roomsJrSuite, 401, roomNumber, status);
+                        dbHandler.confirmBookingAndLockRoom(roomsJrSuite, 401, roomNumber, status);
                     } 
                     else if (roomType.contains("suite") && !roomType.contains("junior") && !roomType.contains("jr") && roomNumber >= 501 && roomNumber <= 504) {
-                        db.confirmBookingAndLockRoom(roomsSuite, 501, roomNumber, status);
+                        dbHandler.confirmBookingAndLockRoom(roomsSuite, 501, roomNumber, status);
                     } 
                     else if (roomType.contains("penthouse") && roomNumber >= 601 && roomNumber <= 602) {
-                        db.confirmBookingAndLockRoom(roomsPentHouse, 601, roomNumber, status);
+                        dbHandler.confirmBookingAndLockRoom(roomsPentHouse, 601, roomNumber, status);
                     }
                 } catch (NumberFormatException e) {}
             }
@@ -85,8 +80,7 @@ public class RoomAvailability {
 
     public int getOccupiedCount(LocalDate targetDate) {
         int count = 0;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(hotelDbPath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(DatabaseHandler.HOTEL_DB_PATH))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.toLowerCase().contains("booking")) {
@@ -104,14 +98,13 @@ public class RoomAvailability {
                 }
             }
         } catch (Exception e) {}
-
         return count;
     }
 
     public void syncWithHotelDatabase(String targetDateStr) {
         LocalDate targetDate = LocalDate.parse(targetDateStr);
 
-        try (BufferedReader br = new BufferedReader(new FileReader(hotelDbPath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(DatabaseHandler.HOTEL_DB_PATH))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] record = line.split("\\|"); 
@@ -197,15 +190,12 @@ public class RoomAvailability {
     }
 
     public String getGuestName(int roomNumber) {
-        Database db = new Database();
-        List<String[]> records = db.readRoomDatabase(); 
+        List<String[]> records = dbHandler.readRoomDatabase(); 
         for (String[] record : records) {
             if (record.length >= 4) { 
                 try {
                     int dbRoomNum = Integer.parseInt(record[0].trim());
-                    if (dbRoomNum == roomNumber) {
-                        return record[3].trim(); 
-                    }
+                    if (dbRoomNum == roomNumber) return record[3].trim(); 
                 } catch (NumberFormatException e) {}
             }
         }
