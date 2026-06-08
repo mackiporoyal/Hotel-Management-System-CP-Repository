@@ -193,7 +193,7 @@ public class CashierController implements RoomPricing {
                         amountToPay = currentRemainingBalance; // Settle ONLY the calculated delta gap amount
                         paymentStatusText = "FULLY_PAID";
                     } else {
-                        System.out.println("\t\t          [!] Operational selection error. Aborting.");
+                        System.out.println("\t\t          [!] Selection failed. Restarting...");
                         return;
                     }
 

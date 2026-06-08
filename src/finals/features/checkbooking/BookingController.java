@@ -47,11 +47,11 @@ public class BookingController extends BookingManager {
         System.out.println("\n\t\t╔" + border + "╗");
         UIElement.printCenteredRow("[ VIEW RECORDS SELECTION VIEW ]");
         System.out.println("\t\t╠" + border + "╣");
-        UIElement.printRow("            [ 1 ] Search and View CARD by Unique Booking ID");
-        UIElement.printRow("            [ 2 ] Search and View CARD by Guest Name Pattern");
-        UIElement.printRow("            [ 3 ] List ALL Booking Records in a Structured GRID TABLE");
+        UIElement.printRow("            [ 1 ] Search and View Booking by Booking ID");
+        UIElement.printRow("            [ 2 ] Search and View Booking by Guest Name");
+        UIElement.printRow("            [ 3 ] View ALL Booking Records");
         System.out.println("\t\t╚" + border + "╝");
-        System.out.print("\t\t          ► Select View Filter: ");
+        System.out.print("\t\t          ► Enter Choice: ");
         String subChoice = scan.nextLine().trim();
 
         switch (subChoice) {
@@ -67,7 +67,7 @@ public class BookingController extends BookingManager {
                 renderMasterGridTable();
                 break;
             default:
-                System.out.println("\t\t            [!] Invalid option. View process aborted.");
+                System.out.println("\t\t            [!] Invalid option. Enter correct option.");
         }
     }
 
@@ -90,13 +90,13 @@ public class BookingController extends BookingManager {
             if (isMatch) {
                 matchFound = true;
                 System.out.println("\n\t\t╔" + border + "╗");
-                UIElement.printRow(String.format(" GUEST BOOKING CARD                                                   ID: %-12s", row[0].trim()));
+                UIElement.printRow(String.format(" GUEST BOOKING DETAILS                                                  ID: %-12s", row[0].trim()));
                 System.out.println("\t\t╠" + thinBorder + "╣");
                 UIElement.printRow(String.format("  ► CHECK-IN DURATION : %s  to  %s", row[1].trim(), row[2].trim()));
-                UIElement.printRow(String.format("  ► ROOM CONFIGURATION: Room %s (%s)", row[4].trim(), row[3].trim()));
-                UIElement.printRow(String.format("  ► PRIMARY OCCUPANTS : %s", row[5].trim()));
-                UIElement.printRow(String.format("  ► CHILD DEPENDENTS  : %s", row[6].trim()));
-                UIElement.printRow(String.format("  ► AMENITIES TICKETS : Pool Passes: %s  |  Buffet Passes: %s", row[9].trim(), row[10].trim()));
+                UIElement.printRow(String.format("  ► ALLOCATED ROOM    : Room %s (%s)", row[4].trim(), row[3].trim()));
+                UIElement.printRow(String.format("  ► ADULTS            : %s", row[5].trim()));
+                UIElement.printRow(String.format("  ► CHILDREN          : %s", row[6].trim()));
+                UIElement.printRow(String.format("  ► AMENITIES         : Pool Passes: %s  |  Buffet Passes: %s", row[9].trim(), row[10].trim()));
                 System.out.println("\t\t╠" + thinBorder + "╣");
                 UIElement.printRow(String.format("  ► ACCOUNT BALANCE   : PAYMENT STATUS -> [%s]", row[11].trim()));
                 UIElement.printRow(String.format("  ► SYSTEM LOG STATUS : MONITOR STATE  -> [%s]", row[12].trim()));
@@ -105,7 +105,7 @@ public class BookingController extends BookingManager {
         }
 
         if (!matchFound) {
-            System.out.println("\t\t            [!] Operational warning: Zero card matches for key: " + searchInput);
+            System.out.println("\t\t            [!] Booking ID " + searchInput + " not found.");
         } else {
             System.out.print("\n\t\t          ► Press ENTER to return...");
             scan.nextLine();
@@ -118,7 +118,7 @@ public class BookingController extends BookingManager {
     private void renderMasterGridTable() {
         List<String[]> currentRecords = this.readAllLines();
         if (currentRecords.isEmpty()) {
-            System.out.println("\t\t            [!] Database tracking file is currently empty.");
+            System.out.println("\t\t            [!] Database file is currently empty.");
             return;
         }
 
@@ -126,7 +126,7 @@ public class BookingController extends BookingManager {
         String thinBorder = UIElement.createBorder("─");
 
         System.out.println("\n\t\t╔" + border + "╗");
-        UIElement.printCenteredRow("MASTER REVENUE & RESERVATION DATA GRID MATRIX");
+        UIElement.printCenteredRow("MASTER BOOKING DATA");
         System.out.println("\t\t╠" + border + "╣");
         
         // Dynamic padding structure mapping to fit into your standard width
@@ -214,7 +214,7 @@ public class BookingController extends BookingManager {
 
         if (purged) {
             this.overwriteDatabase(databaseLines); 
-            System.out.println("\t\t            [Success] Record ID " + targetId + " completely dropped from file systems.");
+            System.out.println("\t\t            [Success] Booking ID " + targetId + " deleted from file systems.");
         } else {
             System.out.println("\t\t            [!] Critical Error: Index tracking pointer mapping mismatch.");
         }
@@ -227,7 +227,7 @@ public class BookingController extends BookingManager {
                 return row[0].trim();
             }
         }
-        System.out.println("\t\t            [!] Error: No matched records found tracking name pattern: " + searchName);
+        System.out.println("\t\t            [!] Guest name " + searchName + " not found.");
         return null;
     }
 }

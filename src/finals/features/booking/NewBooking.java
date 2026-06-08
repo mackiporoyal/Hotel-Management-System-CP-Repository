@@ -406,12 +406,12 @@ public class NewBooking extends BookingManager {
         System.out.println("\n\t\t╔" + border + "╗");
         UIElement.printCenteredRow("REGISTRATION SUMMARY - REVIEW ALL DETAILS CAREFULLY");
         System.out.println("\t\t╠" + thinBorder + "╣");
-        UIElement.printRow(String.format("  ► CHECK IN DATE    : %-90s", timeIn));
+        UIElement.printRow(String.format("  ► CHECK IN DATE   : %-90s", timeIn));
         UIElement.printRow(String.format("  ► CHECK OUT DATE  : %-90s", timeOut));
         UIElement.printRow(String.format("  ► ALLOCATED ROOM  : Room %d (%s)", roomNumber, roomType));
-        UIElement.printRow(String.format("  ► REGISTERED HEADS: Adults: %d  │  Children: %d", totalAdult, totalChild));
-        UIElement.printRow(String.format("  ► PRIMARY OCCUPANT: %-90s", adultNames.get(0)));
-        UIElement.printRow(String.format("  ► ADD-ON PASSES   : Pool Pass Qty: %d  │  Buffet Pass Qty: %d", swimPasses, buffetPasses));
+        UIElement.printRow(String.format("  ► TOTAL GUESTS    : Adults: %d  │  Children: %d", totalAdult, totalChild));
+        UIElement.printRow(String.format("  ► PRIMARY GUEST   : %-90s", adultNames.get(0)));
+        UIElement.printRow(String.format("  ► AMENITIES       : Pool Pass Qty: %d  │  Buffet Pass Qty: %d", swimPasses, buffetPasses));
         System.out.println("\t\t╠" + thinBorder + "╣");
         UIElement.printCenteredRow("CONFIRM THAT ALL DETAILS ABOVE ARE CORRECT?");
         UIElement.printRow("            [1] Yes");
@@ -433,7 +433,7 @@ public class NewBooking extends BookingManager {
         }
 
         if (confirmBooking == 2) {
-            System.out.println("\t\t            [Notice] Transaction aborted. Record completely discarded safely.");
+            System.out.println("\t\t            [Notice] Transaction canceled. Record completely discarded safely.");
             return;
         }
         

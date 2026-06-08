@@ -120,7 +120,7 @@ public class BookingManager extends DatabaseHandler {
 
             while (true) {
                 System.out.println("\n\t\t╔" + border + "╗");
-                UIElement.printCenteredRow("COMPREHENSIVE RESERVATION MODIFICATION LEDGER");
+                UIElement.printCenteredRow("BOOKING MODIFIER");
                 System.out.println("\t\t╠" + thinBorder + "╣");
                 UIElement.printRow(String.format("  [1] Check-In Date  : %-30s │ [7] Total Adults     : %-30s", data[1], data[7]));
                 UIElement.printRow(String.format("  [2] Check-Out Date : %-30s │ [8] Total Children   : %-30s", data[2], data[8]));
@@ -165,7 +165,7 @@ public class BookingManager extends DatabaseHandler {
                             case 10: data[10] = newValue; break;
                         }
                     }
-                    System.out.println("\t\t          [Success] Parameter cached locally.");
+                    System.out.println("\t\t          [Success] Booking information updated.");
                 } else {
                     System.out.println("\t\t          [!] Invalid field choice index flag.");
                 }
