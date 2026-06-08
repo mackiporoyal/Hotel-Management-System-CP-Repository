@@ -37,7 +37,7 @@ public class CashierController implements RoomPricing {
             System.out.print("\t\t          ► Choice: ");
             
             int choice = sc.nextInt();
-            sc.nextLine();
+            sc.nextLine(); // Clear scanner buffer after reading choice integer
             if (choice == -1) break;
             
             switch(choice) {
@@ -46,13 +46,23 @@ public class CashierController implements RoomPricing {
                     System.out.print("\n\t\t          ► Enter Booking ID: "); 
                     processPayment(sc.nextLine()); 
                     break;
-                case 2: listUnpaidBookings(); break;
-                case 3: displayFinancialDashboard(); break;
+                case 2: 
+                    listUnpaidBookings(); 
+                    break;
+                case 3: 
+                    displayFinancialDashboard(); 
+                    break;
             }
         }
     }
 
     public void processPayment(String bookingId) {
+        // Safety check to prevent empty or white-space entries from auto-matching file indices
+        if (bookingId == null || bookingId.trim().isEmpty()) {
+            System.out.println("\t\t          [!] Invalid ID. Entry cannot be empty.");
+            return;
+        }
+
         try {
             List<String> lines = Files.readAllLines(Paths.get(hotelDbPath));
             for (int i = 0; i < lines.size(); i++) {
@@ -67,30 +77,43 @@ public class CashierController implements RoomPricing {
                     int swim = Integer.parseInt(data[9].trim());
                     int buffet = Integer.parseInt(data[10].trim());
                     double extras = calculateExtras(swim, buffet);
-                    
-                    // Show breakdown
-                    System.out.println("\n\t\t--- BILL DETAILS ---");
-                    System.out.println("\t\t Room (" + data[3] + "): PHP " + String.format("%.2f", roomPrice));
-                    System.out.println("\t\t Extras (Swim/Buffet): PHP " + String.format("%.2f", extras));
                     double total = calculateFinalTotal(data[3], nights, swim, buffet, Integer.parseInt(data[7].trim()));
-                    System.out.println("\t\t TOTAL TO PAY: PHP " + String.format("%.2f", total));
+
+                    // --- BOXED LOGICAL ALIGNMENT ---
+                    String border = "═".repeat(WIDTH);
+                    System.out.println("\n\t\t╔" + border + "╗");
+                    printRow("BILLING STATEMENT & BREAKDOWN");
+                    System.out.println("\t\t╠" + border + "╣");
+                    printRow(" ");
+                    printRow(String.format("  Booking ID:    %-90s", bookingId));
+                    printRow(String.format("  Guest Name:    %-90s", data[5].trim()));
+                    printRow(String.format("  Room Type:     %-90s", data[3].trim() + " (Room " + data[4].trim() + ")"));
+                    printRow(String.format("  Duration:      %-90s", nights + " Night(s)"));
+                    printRow(" ");
+                    printRow("  CHARGES LIST:");
+                    printRow(String.format("    ► Room Base Price:                           PHP %-50.2f", roomPrice));
+                    printRow(String.format("    ► Amenities (Swim Passes: %d, Buffet: %d):     PHP %-50.2f", swim, buffet, extras));
+                    printRow(" ");
+                    System.out.println("\t\t╠" + border + "╣");
+                    printRow(String.format("  TOTAL BALANCE DUE:                             PHP %-50.2f", total));
+                    System.out.println("\t\t╚" + border + "╝");
 
                     // --- 2. ASK FOR CASH ---
                     Scanner sc = new Scanner(System.in);
-                    System.out.print("\t\t Enter Cash Received: PHP ");
+                    System.out.print("\t\t          ► Enter Cash Received: PHP ");
                     double cash = sc.nextDouble();
 
                     if (cash < (total * 0.30)) {
-                        System.out.println("\t\t [!] Insufficient amount for downpayment.");
+                        System.out.println("\t\t          [!] Insufficient amount for downpayment.");
                         return;
                     }
 
                     // --- 3. MATH & STATUS ---
-                    double applyAmount = (cash >= total) ? total : (total * 0.30); // Uses partial payment if cash is only 30%
+                    double applyAmount = (cash >= total) ? total : (total * 0.30); 
                     double change = cash - applyAmount;
                     String status = (cash >= total) ? "FULLY_PAID" : "DOWNPAYMENT";
 
-                    System.out.println("\t\t Change: PHP " + String.format("%.2f", change));
+                    System.out.println("\t\t          ► Change: PHP " + String.format("%.2f", change));
                     
                     // --- 4. UPDATE DATABASE ---
                     data[11] = status; 
@@ -98,11 +121,12 @@ public class CashierController implements RoomPricing {
                     Files.write(Paths.get(hotelDbPath), lines);
                     
                     logTransaction(generateTransactionId(), bookingId, applyAmount);
-                    System.out.println("\t\t [!] Transaction complete. Status: " + status);
+                    System.out.println("\t\t          [Success] Transaction complete. Status: " + status);
                     return;
                 }
             }
-        } catch (Exception e) { System.out.println("\t\t [!] Error: " + e.getMessage()); }
+            System.out.println("\t\t          [!] ID Not Found.");
+        } catch (Exception e) { System.out.println("\t\t          [!] Error: " + e.getMessage()); }
     }
 
     public void listUnpaidBookings() {
@@ -115,7 +139,6 @@ public class CashierController implements RoomPricing {
 
         try {
             for (String line : Files.readAllLines(Paths.get(hotelDbPath))) {
-                // Show bookings that are not fully paid
                 if (line.contains("UNPAID") || line.contains("DOWNPAYMENT")) {
                     String[] d = line.split("\\|");
                     String rowContent = String.format(" %-9s | %-49s | %-50s ", d[0], d[5], d[3] + " - Room " + d[4]);
@@ -144,10 +167,8 @@ public class CashierController implements RoomPricing {
         System.out.println("\t\t║" + content + " ".repeat(Math.max(0, spacesNeeded)) + "║");
     }
 
- // Updated method to accept three parameters
     private void logTransaction(String transId, String bookingId, double amount) {
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(financePath, true)))) {
-            // Log format: Date | TransID | BookingID | Amount
             out.println(LocalDate.now() + "|" + transId + "|" + bookingId + "|" + amount);
         } catch (IOException e) { 
             System.out.println("\t\t [!] Error logging transaction.");
@@ -171,18 +192,15 @@ public class CashierController implements RoomPricing {
         System.out.println("\n\t\t╔" + border + "╗");
         printRow("REVENUE REPORT");
         System.out.println("\t\t╠" + border + "╣");
-        
+        System.out.printf("\t\t║ %-15s | %-15s | %-15s ║\n", "Date", "Trans ID", "Amount");
+        System.out.println("\t\t╠" + border + "╣");
+
         try {
             List<String> logs = Files.readAllLines(Paths.get(financePath));
             for (String line : logs) {
                 try {
                     String[] data = line.split("\\|");
-                    // Check if the line has at least 3 parts (Date, ID, Amount)
-                    // Adjust index based on your log format
                     LocalDate logDate = LocalDate.parse(data[0].trim());
-                    
-                    // Find the amount: if the line has 4 parts, it's index 3. 
-                    // If it has 5, it might be index 4. Let's grab the last part.
                     double amount = Double.parseDouble(data[data.length - 1].trim());
                     String transId = data[1].trim();
 
@@ -196,21 +214,19 @@ public class CashierController implements RoomPricing {
                         totalRevenue += amount;
                     }
                 } catch (Exception e) {
-                    // This line is malformed, skip it and keep going
-                    continue; 
+                    continue; // Skip malformed rows seamlessly
                 }
             }
-        } catch (Exception e) { printRow("Error reading logs."); }
+        } catch (Exception e) { printRow("Error reading financial logs."); }
 
         System.out.println("\t\t╠" + border + "╣");
-        printRow("TOTAL REVENUE: PHP " + String.format("%.2f", totalRevenue));
+        printRow("TOTAL REVENUE COLLECTED: PHP " + String.format("%.2f", totalRevenue));
         System.out.println("\t\t╚" + border + "╝");
         
-        System.out.print("\t\t          ► Press ENTER to return...");
+        System.out.print("\t\t          ► Press ENTER to return to Dashboard...");
         new Scanner(System.in).nextLine();
     }
     
- // --- ID GENERATOR ---
     private String generateTransactionId() {
         try {
             File logFile = new File(financePath);
