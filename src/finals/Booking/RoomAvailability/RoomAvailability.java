@@ -105,7 +105,7 @@ public class RoomAvailability {
         return count;
     }
 
-    // --- UPDATED: STRICTLY CHECKS OVERLAPPING DATES ---
+ // --- UPDATED: STRICTLY CHECKS OVERLAPPING DATES WITH DYNAMIC PAYMENT STATUS ---
     public void syncWithHotelDatabase(String targetDateStr) {
         String filePath = "C:\\Users\\Brieshen\\git\\ComprogFinalsRepository\\finals\\src\\finals\\DatabaseLogic\\HotelDatabase.txt";
         LocalDate targetDate = LocalDate.parse(targetDateStr);
@@ -113,41 +113,40 @@ public class RoomAvailability {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String lowerLine = line.toLowerCase();
+                // I noticed your database uses '|' as a separator based on your example
+                // If your database uses '|', change line.split(",") to line.split("\\|")
+                String[] record = line.split("\\|"); 
                 
-                if (lowerLine.contains("booking")) {
-                    String[] record = line.split(",");
-                    if (record.length >= 4) {
-                        try {
-                            LocalDate checkIn = LocalDate.parse(record[0].trim());
-                            LocalDate checkOut = LocalDate.parse(record[1].trim());
+                if (record.length >= 13) { // Adjusted to match your 13-column format
+                    try {
+                        LocalDate checkIn = LocalDate.parse(record[1].trim());
+                        LocalDate checkOut = LocalDate.parse(record[2].trim());
 
-                            // If the selected date is inside the booking window, mark room as Occupied
-                            if (!targetDate.isBefore(checkIn) && targetDate.isBefore(checkOut)) {
-                                
-                                int roomNumber = -1;
-                                for (String col : record) {
-                                    try {
-                                        int num = Integer.parseInt(col.trim());
-                                        if (num >= 201 && num <= 602) {
-                                            roomNumber = num;
-                                            break; 
-                                        }
-                                    } catch (Exception e) {}
+                        if (!targetDate.isBefore(checkIn) && targetDate.isBefore(checkOut)) {
+                            int roomNumber = Integer.parseInt(record[4].trim());
+
+                            if (roomNumber >= 201 && roomNumber <= 602) {
+                                // --- UPDATED DYNAMIC STATUS LOGIC ---
+                                String paymentStatus = record[11].trim().toUpperCase(); // Index 11 is 'PAID' status
+                                String newStatus = "OD"; // Default to Dirty/Pending
+
+                                if (paymentStatus.equals("FULLY_PAID")) {
+                                    newStatus = "OC"; // Only Fully Paid = Clean
+                                } else if (paymentStatus.equals("DOWNPAYMENT")) {
+                                    newStatus = "OD"; // Needs more payment
+                                } else if (paymentStatus.equals("UNPAID")) {
+                                    newStatus = "OD";
                                 }
 
-                                if (roomNumber != -1) {
-                                    String newStatus = "OC";
-                                    
-                                    if (roomNumber >= 201 && roomNumber <= 216) updateLocalRoomArray(roomsStandard, 201, roomNumber, newStatus);
-                                    else if (roomNumber >= 301 && roomNumber <= 316) updateLocalRoomArray(roomsDeluxe, 301, roomNumber, newStatus);
-                                    else if (roomNumber >= 401 && roomNumber <= 408) updateLocalRoomArray(roomsJrSuite, 401, roomNumber, newStatus);
-                                    else if (roomNumber >= 501 && roomNumber <= 504) updateLocalRoomArray(roomsSuite, 501, roomNumber, newStatus);
-                                    else if (roomNumber >= 601 && roomNumber <= 602) updateLocalRoomArray(roomsPentHouse, 601, roomNumber, newStatus);
-                                }
+                                // Apply status
+                                if (roomNumber >= 201 && roomNumber <= 216) updateLocalRoomArray(roomsStandard, 201, roomNumber, newStatus);
+                                else if (roomNumber >= 301 && roomNumber <= 316) updateLocalRoomArray(roomsDeluxe, 301, roomNumber, newStatus);
+                                else if (roomNumber >= 401 && roomNumber <= 408) updateLocalRoomArray(roomsJrSuite, 401, roomNumber, newStatus);
+                                else if (roomNumber >= 501 && roomNumber <= 504) updateLocalRoomArray(roomsSuite, 501, roomNumber, newStatus);
+                                else if (roomNumber >= 601 && roomNumber <= 602) updateLocalRoomArray(roomsPentHouse, 601, roomNumber, newStatus);
                             }
-                        } catch (Exception e) {}
-                    }
+                        }
+                    } catch (Exception e) {}
                 }
             }
         } catch (Exception e) {}

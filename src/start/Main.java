@@ -58,9 +58,8 @@ public class Main {
 					String pass = scan.nextLine();
 
 					// Cashier Login Security
-					if (user.equalsIgnoreCase("cashier") && pass.length() != 8) {
-						System.out.println("\t\t          [!] Cashier password must be 8 characters.");
-					} else if (auth.authenticate(user, pass)) {
+				
+					if (auth.authenticate(user, pass)) {
 						System.out.println("\t\t          Login Successful!");
 						cash.displayCashierMenu(); // Access granted
 					} else {
