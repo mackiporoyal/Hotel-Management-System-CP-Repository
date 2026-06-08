@@ -273,12 +273,11 @@ public class NewBooking extends BookingManager {
         System.out.println("\t\t╚" + border + "╝");
         
         // --- 5. LOGIC FOR ROOM AVAILABILITY ---
-        boolean proceedWithBooking = roomViewer.startMenu(true); 
-        
+        boolean proceedWithBooking = roomViewer.startMenu(true, timeIn); 
+
         if (!proceedWithBooking) {
-            return; 
+            return;
         }
-        
         System.out.println("\n\t\t╔" + border + "╗");
         printRow("      [ ROOM SELECTION CONTINUED ]");
         System.out.println("\t\t╚" + border + "╝");

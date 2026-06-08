@@ -3,19 +3,21 @@ package start;
 import java.util.Scanner;
 
 import finals.Booking.Menu;
-import finals.Booking.Check_Booking.ManageBooking;
 import finals.Booking.RoomAvailability.RoomAvailability;
 import finals.Booking.RoomAvailability.RoomController;
 import finals.DatabaseLogic.Database;
+import finals.DatabaseLogic.ManageBooking;
+import finals.DatabaseLogic.AccountManager; // Import the new Auth manager
 import finals.Receptionist.NewBooking;
 import finals.Cashier.CashierController;
 
-public class Main { // FIX 1: Removed "extends Database"
+public class Main {
 	
 	public static void main(String[] args) {		
 		
 		Scanner scan = new Scanner(System.in);
 		Database db = new Database();	
+		AccountManager auth = new AccountManager(); // Auth Instance
 		NewBooking newBooking = new NewBooking();
 		RoomAvailability roomAvailability = new RoomAvailability(); 
 		RoomController room = new RoomController();
@@ -24,7 +26,6 @@ public class Main { // FIX 1: Removed "extends Database"
 		ManageBooking search = new ManageBooking();
 		CashierController cash = new CashierController(); 
 		
-		
 		while(true) {
 			menu.displayMenu();
 			System.out.print("\t\t\t\tENTER HERE: ");
@@ -32,7 +33,7 @@ public class Main { // FIX 1: Removed "extends Database"
 			
 			try {
 				chooseMenu = scan.nextInt();
-				scan.nextLine(); // Clear scanner buffer
+				scan.nextLine(); 
 			} catch(Exception e) {
 				scan.nextLine();
 			}
@@ -46,16 +47,32 @@ public class Main { // FIX 1: Removed "extends Database"
 					search.checkBooking();
 					break;
 					
-				case 3: 
+				case 3: // Room Availability
 					room.startMenu(false);
 					break;
-					
+
+				case 4: // Cashier Access (Login Required)
+					System.out.print("\t\t          ► Username: ");
+					String user = scan.nextLine();
+					System.out.print("\t\t          ► Password: ");
+					String pass = scan.nextLine();
+
+					// Cashier Login Security
+					if (user.equalsIgnoreCase("cashier") && pass.length() != 8) {
+						System.out.println("\t\t          [!] Cashier password must be 8 characters.");
+					} else if (auth.authenticate(user, pass)) {
+						System.out.println("\t\t          Login Successful!");
+						cash.displayCashierMenu(); // Access granted
+					} else {
+						System.out.println("\t\t          [!] Invalid Credentials.");
+					}
+					break;
+
 				default: 
 					System.out.println("\t\t╔══════════════════════════════════════════════════════════════════════════════╗");
 					System.out.println("\t\t║                                INVALID OPTION                                ║");
 					System.out.println("\t\t╚══════════════════════════════════════════════════════════════════════════════╝");
-					// FIX 4: Just display a clean error message since we know there are only 3 options right now
-					System.out.println("\t\t\t\tPlease enter a valid option (1-3).");
+					System.out.println("\t\t\t\tPlease enter a valid option.");
 			}
 		}
 	} 
