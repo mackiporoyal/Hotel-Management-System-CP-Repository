@@ -6,28 +6,24 @@ public class RoomDisplay {
     
     private finals.Booking.RoomAvailability.RoomAvailability data;
 
+    // Streamlined Enum without long description variables
     public enum StatusLegend {
-        VR("[VR]", "Vacant/Ready", "ready for occupation of next guest/s"),
-        VD("[VD]", "Vacant/Dirty", "needs cleaning services"),
-        OC("[OC]", "Occupied/Clean", "no need for cleaning services (until guests request for one)"),
-        OD("[OD]", "Occupied/Dirty", "guest requested for cleaning services"),
-        OOS("[OOS]", "Out of Service", "needs minor fixing, kahit may sira pwede occupy ng guests if overbooked"),
-        OOO("[OOO]", "Out of Order", "needs major fixing, unbookable");
+        VR("[VR] Vacant/Ready"),
+        VD("[VD] Vacant/Dirty"),
+        OC("[OC] Occupied/Clean"),
+        OD("[OD] Occupied/Dirty"),
+        OR("[OR] Occupied/Reserved"),
+        OOS("[OOS] Out of Service"),
+        OOO("[OOO] Out of Order");
 
-        private String code;
-        private String name;
-        private String desc;
+        private String label;
 
-        StatusLegend(String code, String name, String desc) {
-            this.code = code;
-            this.name = name;
-            this.desc = desc;
+        StatusLegend(String label) {
+            this.label = label;
         }
 
-        public String getFullText() {
-            String codePad = code + " ".repeat(6 - code.length());
-            String namePad = name + " ".repeat(16 - name.length());
-            return codePad + namePad + "- " + desc;
+        public String getLabel() {
+            return label;
         }
     }
 
@@ -86,7 +82,6 @@ public class RoomDisplay {
         System.out.println("\t\t║" + title + " ".repeat(120 - title.length()) + "║");
         System.out.println("\t\t║" + empty + "║");
         
-        // --- CLEAN NAVIGATION FLOW ---
         if (isBookingMode) {
             System.out.println("\t\t║          [ 1 ] I am ready to pick my room (Exit Viewer)" + " ".repeat(120 - "          [ 1 ] I am ready to pick my room (Exit Viewer)".length()) + "║");
         } else {
@@ -184,14 +179,24 @@ public class RoomDisplay {
             System.out.println("\t\t╠" + "═".repeat(INNER_WIDTH) + "╣");
             printCenteredLine(" [ ROOM STATUS LEGEND ] ", INNER_WIDTH);
             System.out.println("\t\t╠" + "═".repeat(INNER_WIDTH) + "╣");
-            System.out.println("\t\t║" + " ".repeat(INNER_WIDTH) + "║");
             
-            for (StatusLegend legend : StatusLegend.values()) {
-                String text = "      " + legend.getFullText(); 
-                System.out.println("\t\t║" + text + " ".repeat(120 - text.length()) + "║");
+            StatusLegend[] values = StatusLegend.values();
+            
+            // Row 1: First 4 items (Removed .trim() so trailing spacer padding remains intact)
+            StringBuilder row1 = new StringBuilder();
+            for (int i = 0; i < 4 && i < values.length; i++) {
+                row1.append(values[i].getLabel());
+                if (i < 3) row1.append("      "); // Add space between items, but not after the last item
             }
+            printCenteredLine(row1.toString(), INNER_WIDTH);
             
-            System.out.println("\t\t║" + " ".repeat(INNER_WIDTH) + "║");
+            // Row 2: Remaining items printed directly below with balanced structural gaps
+            StringBuilder row2 = new StringBuilder();
+            for (int i = 4; i < values.length; i++) {
+                row2.append(values[i].getLabel());
+                if (i < values.length - 1) row2.append("      ");
+            }
+            printCenteredLine(row2.toString(), INNER_WIDTH);
         }
         
         System.out.println("\t\t╚" + "═".repeat(INNER_WIDTH) + "╝");

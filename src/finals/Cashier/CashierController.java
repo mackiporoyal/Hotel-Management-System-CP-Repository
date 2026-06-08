@@ -12,7 +12,9 @@ public class CashierController implements RoomPricing {
                                    File.separator + "finals" + File.separator + "DatabaseLogic" + File.separator;
     private final String hotelDbPath = dbFolder + "HotelDatabase.txt";
     private final String financePath = dbFolder + "FinanceLog.txt";
-    private final int WIDTH = 120; 
+    
+    // Made static to support static UI rendering methods
+    private static final int WIDTH = 120; 
 
     public CashierController() {
         File logFile = new File(financePath);
@@ -25,7 +27,7 @@ public class CashierController implements RoomPricing {
 
         while (true) {
             System.out.println("\n\t\t╔" + border + "╗");
-            printRow("CASHIER DASHBOARD");
+            printCenteredRow("CASHIER DASHBOARD");
             System.out.println("\t\t╠" + border + "╣");
             printRow(" ");
             printRow("          [ 1 ] Process Payment");
@@ -37,7 +39,7 @@ public class CashierController implements RoomPricing {
             System.out.print("\t\t          ► Choice: ");
             
             int choice = sc.nextInt();
-            sc.nextLine(); // Clear scanner buffer after reading choice integer
+            sc.nextLine(); 
             if (choice == -1) break;
             
             switch(choice) {
@@ -57,7 +59,6 @@ public class CashierController implements RoomPricing {
     }
 
     public void processPayment(String bookingId) {
-        // Safety check to prevent empty or white-space entries from auto-matching file indices
         if (bookingId == null || bookingId.trim().isEmpty()) {
             System.out.println("\t\t          [!] Invalid ID. Entry cannot be empty.");
             return;
@@ -82,7 +83,7 @@ public class CashierController implements RoomPricing {
                     // --- BOXED LOGICAL ALIGNMENT ---
                     String border = "═".repeat(WIDTH);
                     System.out.println("\n\t\t╔" + border + "╗");
-                    printRow("BILLING STATEMENT & BREAKDOWN");
+                    printCenteredRow("BILLING STATEMENT & BREAKDOWN");
                     System.out.println("\t\t╠" + border + "╣");
                     printRow(" ");
                     printRow(String.format("  Booking ID:    %-90s", bookingId));
@@ -96,23 +97,42 @@ public class CashierController implements RoomPricing {
                     printRow(" ");
                     System.out.println("\t\t╠" + border + "╣");
                     printRow(String.format("  TOTAL BALANCE DUE:                             PHP %-50.2f", total));
+                    printRow(String.format("  REQUIRED DOWNPAYMENT (30%%):                    PHP %-50.2f", calculateDownpayment(total)));
                     System.out.println("\t\t╚" + border + "╝");
 
-                    // --- 2. ASK FOR CASH ---
+                    // --- 2. RESTORED PAYMENT OPTION SELECTION ---
                     Scanner sc = new Scanner(System.in);
+                    System.out.println("\n\t\t╔" + border + "╗");
+                    printCenteredRow("SELECT PAYMENT TYPE");
+                    System.out.println("\t\t╠" + border + "╣");
+                    printRow("            [ 1 ] Downpayment (30%)");
+                    printRow("            [ 2 ] Full Payment (100%)");
+                    System.out.println("\t\t╚" + border + "╝");
+                    System.out.print("\t\t          ► Option: ");
+                    int paymentChoice = sc.nextInt();
+
+                    double amountToApply = 0;
+                    String status = "";
+
+                    if (paymentChoice == 1) {
+                        amountToApply = calculateDownpayment(total);
+                        status = "DOWNPAYMENT";
+                    } else {
+                        amountToApply = total;
+                        status = "FULLY_PAID";
+                    }
+
+                    // --- 3. ASK FOR CASH ---
                     System.out.print("\t\t          ► Enter Cash Received: PHP ");
                     double cash = sc.nextDouble();
 
-                    if (cash < (total * 0.30)) {
-                        System.out.println("\t\t          [!] Insufficient amount for downpayment.");
+                    if (cash < amountToApply) {
+                        System.out.println("\t\t          [!] Insufficient amount. Required: PHP " + String.format("%.2f", amountToApply));
                         return;
                     }
 
-                    // --- 3. MATH & STATUS ---
-                    double applyAmount = (cash >= total) ? total : (total * 0.30); 
-                    double change = cash - applyAmount;
-                    String status = (cash >= total) ? "FULLY_PAID" : "DOWNPAYMENT";
-
+                    // Calculate change based on the choice path selected
+                    double change = cash - amountToApply;
                     System.out.println("\t\t          ► Change: PHP " + String.format("%.2f", change));
                     
                     // --- 4. UPDATE DATABASE ---
@@ -120,7 +140,7 @@ public class CashierController implements RoomPricing {
                     lines.set(i, String.join("|", data));
                     Files.write(Paths.get(hotelDbPath), lines);
                     
-                    logTransaction(generateTransactionId(), bookingId, applyAmount);
+                    logTransaction(generateTransactionId(), bookingId, amountToApply);
                     System.out.println("\t\t          [Success] Transaction complete. Status: " + status);
                     return;
                 }
@@ -132,7 +152,7 @@ public class CashierController implements RoomPricing {
     public void listUnpaidBookings() {
         String border = "═".repeat(WIDTH);
         System.out.println("\n\t\t╔" + border + "╗");
-        printRow("PENDING BOOKINGS (UNPAID / DOWNPAYMENT)");
+        printCenteredRow("PENDING BOOKINGS (UNPAID / DOWNPAYMENT)");
         System.out.println("\t\t╠" + border + "╣");
         System.out.printf("\t\t║ %-10s | %-50s | %-50s ║\n", " ID", " Guest Name", " Room Details");
         System.out.println("\t\t╠" + border + "╣");
@@ -148,23 +168,20 @@ public class CashierController implements RoomPricing {
         } catch (IOException e) { printRow("Error reading database."); }
         System.out.println("\t\t╚" + border + "╝");
     }
-    	
-    private void printReceipt(String id, String room, long nights, int swim, int buffet, double total, int adults) {
-        String border = "═".repeat(WIDTH);
-        System.out.println("\n\t\t╔" + border + "╗");
-        printRow("OFFICIAL RECEIPT");
-        System.out.println("\t\t╠" + border + "╣");
-        System.out.println("\t\t║ Booking ID: " + id + " ".repeat(WIDTH - 13 - id.length()) + "║");
-        System.out.println("\t\t║ Room: " + room + " (" + nights + " nights) " + " ".repeat(WIDTH - 40) + "║");
-        System.out.println("\t\t║ Extras Total: PHP " + String.format("%.2f", calculateExtras(swim, buffet)) + " ".repeat(WIDTH - 30) + "║");
-        System.out.println("\t\t╠" + border + "╣");
-        printRow("TOTAL PAID: PHP " + String.format("%.2f", total));
-        System.out.println("\t\t╚" + border + "╝");
-    }
 
-    private void printRow(String content) {
+    // Made static to bridge scope gaps
+    private static void printRow(String content) {
         int spacesNeeded = WIDTH - content.length();
         System.out.println("\t\t║" + content + " ".repeat(Math.max(0, spacesNeeded)) + "║");
+    }
+
+    // Made static to bridge scope gaps
+    private static void printCenteredRow(String content) {
+        String trimmed = content.trim();
+        int totalSpaces = WIDTH - trimmed.length();
+        int leftSpaces = totalSpaces / 2;
+        int rightSpaces = totalSpaces - leftSpaces;
+        System.out.println("\t\t║" + " ".repeat(Math.max(0, leftSpaces)) + trimmed + " ".repeat(Math.max(0, rightSpaces)) + "║");
     }
 
     private void logTransaction(String transId, String bookingId, double amount) {
@@ -175,34 +192,65 @@ public class CashierController implements RoomPricing {
         }
     }
 
-    public void displayFinancialDashboard() {
+    // Keeping it static as per requested fix configuration
+    public static void displayFinancialDashboard() {
         String border = "═".repeat(WIDTH);
         Scanner sc = new Scanner(System.in);
+        
+        // Dynamic path calculations shifted safely inside static memory allocation context
+        String baseDir = System.getProperty("user.dir") + File.separator + "src" + File.separator + "finals" + File.separator + "DatabaseLogic" + File.separator;
+        String hDbPath = baseDir + "HotelDatabase.txt";
+        String fLogPath = baseDir + "FinanceLog.txt";
 
         System.out.println("\n\t\t╔" + border + "╗");
-        printRow("SELECT REVENUE VIEW");
-        printRow(" [1] Daily | [2] Weekly | [3] Yearly");
+        printCenteredRow("HOTEL MANAGEMENT SYSTEM - FINANCIAL DASHBOARD");
+        printCenteredRow("[ Select a dynamic filter view for revenue data ]");
+        System.out.println("\t\t╠" + border + "╣");
+        printRow(" ");
+        printRow("            [ 1 ] Daily Revenue Summary");
+        printRow("            [ 2 ] Weekly Revenue Summary");
+        printRow("            [ 3 ] Yearly Revenue Summary");
+        printRow(" ");
         System.out.println("\t\t╚" + border + "╝");
         System.out.print("\t\t          ► Choice: ");
         int viewType = sc.nextInt();
+        sc.nextLine(); 
         
         LocalDate today = LocalDate.now();
         double totalRevenue = 0.0;
 
         System.out.println("\n\t\t╔" + border + "╗");
-        printRow("REVENUE REPORT");
+        printCenteredRow("[ REVENUE AUDIT REPORT ]");
         System.out.println("\t\t╠" + border + "╣");
-        System.out.printf("\t\t║ %-15s | %-15s | %-15s ║\n", "Date", "Trans ID", "Amount");
+        
+        // Meticulously calculated column widths to total exactly 118 characters inside the box
+        String headers = String.format(" %-10s | %-8s | %-15s | %-12s | %-6s | %-25s | %-18s ", 
+                         "Date", "Trans ID", "Guest Name", "Room Type", "Room #", "Amenities (S/B)", "Revenue Applied");
+        System.out.println("\t\t║" + headers + "║");
         System.out.println("\t\t╠" + border + "╣");
 
+        Map<String, String[]> hotelDbMap = new HashMap<>();
         try {
-            List<String> logs = Files.readAllLines(Paths.get(financePath));
+            List<String> hotelLines = Files.readAllLines(Paths.get(hDbPath));
+            for (String hLine : hotelLines) {
+                String[] hData = hLine.split("\\|");
+                if (hData.length > 0) {
+                    hotelDbMap.put(hData[0].trim(), hData);
+                }
+            }
+        } catch (IOException e) {
+            printRow("          [!] Error pre-loading hotel registration data.");
+        }
+
+        try {
+            List<String> logs = Files.readAllLines(Paths.get(fLogPath));
             for (String line : logs) {
                 try {
                     String[] data = line.split("\\|");
                     LocalDate logDate = LocalDate.parse(data[0].trim());
-                    double amount = Double.parseDouble(data[data.length - 1].trim());
                     String transId = data[1].trim();
+                    String bookingId = data[2].trim();
+                    double amount = Double.parseDouble(data[data.length - 1].trim());
 
                     boolean show = false;
                     if (viewType == 1) show = logDate.equals(today);
@@ -210,21 +258,42 @@ public class CashierController implements RoomPricing {
                     else if (viewType == 3) show = logDate.getYear() == today.getYear();
 
                     if (show) {
-                        printRow(String.format(" %-15s | %-15s | PHP %-10.2f", data[0], transId, amount));
+                        String guestName = "N/A";
+                        String roomType = "N/A";
+                        String roomNum = "N/A";
+                        String amenitiesInfo = "None";
+
+                        if (hotelDbMap.containsKey(bookingId)) {
+                            String[] hData = hotelDbMap.get(bookingId);
+                            roomType = hData[3].trim();
+                            roomNum = hData[4].trim();
+                            guestName = hData[5].trim();
+                            int swimPasses = Integer.parseInt(hData[9].trim());
+                            int buffetPasses = Integer.parseInt(hData[10].trim());
+                            amenitiesInfo = "Swim: " + swimPasses + " | Buffet: " + buffetPasses;
+                        }
+
+                        if (guestName.length() > 15) guestName = guestName.substring(0, 12) + "...";
+
+                        String rowContent = String.format(" %-10s | %-8s | %-15s | %-12s | %-6s | %-25s | PHP %-14.2f ", 
+                                            data[0].trim(), transId, guestName, roomType, roomNum, amenitiesInfo, amount);
+                        System.out.println("\t\t║" + rowContent + "║");
                         totalRevenue += amount;
                     }
                 } catch (Exception e) {
-                    continue; // Skip malformed rows seamlessly
+                    continue; 
                 }
             }
-        } catch (Exception e) { printRow("Error reading financial logs."); }
+        } catch (Exception e) { 
+            printRow("          [!] Failed reading transaction logs."); 
+        }
 
         System.out.println("\t\t╠" + border + "╣");
-        printRow("TOTAL REVENUE COLLECTED: PHP " + String.format("%.2f", totalRevenue));
+        printRow(String.format("          TOTAL COMBINED REVENUE COLLECTED : PHP %-50.2f", totalRevenue));
         System.out.println("\t\t╚" + border + "╝");
         
         System.out.print("\t\t          ► Press ENTER to return to Dashboard...");
-        new Scanner(System.in).nextLine();
+        sc.nextLine();
     }
     
     private String generateTransactionId() {

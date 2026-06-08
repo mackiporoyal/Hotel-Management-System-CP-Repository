@@ -77,7 +77,6 @@ public class RoomAvailability {
         }
     }
 
-    // --- NEW HELPER: GETS TOTAL BOOKINGS FOR A SPECIFIC DATE (FOR CALENDAR) ---
     public int getOccupiedCount(LocalDate targetDate) {
         int count = 0;
         String filePath = "C:\\Users\\Brieshen\\git\\ComprogFinalsRepository\\finals\\src\\finals\\DatabaseLogic\\HotelDatabase.txt";
@@ -92,7 +91,6 @@ public class RoomAvailability {
                             LocalDate checkIn = LocalDate.parse(record[0].trim());
                             LocalDate checkOut = LocalDate.parse(record[1].trim());
 
-                            // Checks if the date falls between checkIn and checkOut!
                             if (!targetDate.isBefore(checkIn) && targetDate.isBefore(checkOut)) {
                                 count++;
                             }
@@ -105,7 +103,6 @@ public class RoomAvailability {
         return count;
     }
 
- // --- UPDATED: STRICTLY CHECKS OVERLAPPING DATES WITH DYNAMIC PAYMENT STATUS ---
     public void syncWithHotelDatabase(String targetDateStr) {
         String filePath = "C:\\Users\\Brieshen\\git\\ComprogFinalsRepository\\finals\\src\\finals\\DatabaseLogic\\HotelDatabase.txt";
         LocalDate targetDate = LocalDate.parse(targetDateStr);
@@ -113,11 +110,9 @@ public class RoomAvailability {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                // I noticed your database uses '|' as a separator based on your example
-                // If your database uses '|', change line.split(",") to line.split("\\|")
                 String[] record = line.split("\\|"); 
                 
-                if (record.length >= 13) { // Adjusted to match your 13-column format
+                if (record.length >= 13) { 
                     try {
                         LocalDate checkIn = LocalDate.parse(record[1].trim());
                         LocalDate checkOut = LocalDate.parse(record[2].trim());
@@ -126,19 +121,18 @@ public class RoomAvailability {
                             int roomNumber = Integer.parseInt(record[4].trim());
 
                             if (roomNumber >= 201 && roomNumber <= 602) {
-                                // --- UPDATED DYNAMIC STATUS LOGIC ---
-                                String paymentStatus = record[11].trim().toUpperCase(); // Index 11 is 'PAID' status
-                                String newStatus = "OD"; // Default to Dirty/Pending
+                                String paymentStatus = record[11].trim().toUpperCase(); 
+                                String newStatus = "OD"; // Default fallback status
 
+                                // --- FIXED STATUS SELECTOR LOGIC FOR DOWNPAYMENTS ---
                                 if (paymentStatus.equals("FULLY_PAID")) {
-                                    newStatus = "OC"; // Only Fully Paid = Clean
+                                    newStatus = "OC"; 
                                 } else if (paymentStatus.equals("DOWNPAYMENT")) {
-                                    newStatus = "OD"; // Needs more payment
+                                    newStatus = "OR"; // Maps downpayment directly to Occupied/Reserved
                                 } else if (paymentStatus.equals("UNPAID")) {
                                     newStatus = "OD";
                                 }
 
-                                // Apply status
                                 if (roomNumber >= 201 && roomNumber <= 216) updateLocalRoomArray(roomsStandard, 201, roomNumber, newStatus);
                                 else if (roomNumber >= 301 && roomNumber <= 316) updateLocalRoomArray(roomsDeluxe, 301, roomNumber, newStatus);
                                 else if (roomNumber >= 401 && roomNumber <= 408) updateLocalRoomArray(roomsJrSuite, 401, roomNumber, newStatus);
@@ -192,6 +186,7 @@ public class RoomAvailability {
         if (code.equals("VD")) return "Vacant / Dirty";
         if (code.equals("OC")) return "Occupied / Clean";
         if (code.equals("OD")) return "Occupied / Dirty";
+        if (code.equals("OR")) return "Occupied / Reserved"; // Added description mapping logic here
         if (code.equals("OOS")) return "Out of Service";
         if (code.equals("OOO")) return "Out of Order";
         
