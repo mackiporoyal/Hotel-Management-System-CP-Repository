@@ -2,6 +2,7 @@ package finals.Booking.RoomAvailability;
 
 import finals.DatabaseLogic.Database;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.time.LocalDate;
 import java.util.List;
@@ -42,6 +43,11 @@ public class RoomAvailability {
         {"S"},
     };
 
+    // Dynamic database folder base path compilation
+    private final String dbFolder = System.getProperty("user.dir") + File.separator + "src" + 
+                                   File.separator + "finals" + File.separator + "DatabaseLogic" + File.separator;
+    private final String hotelDbPath = dbFolder + "HotelDatabase.txt";
+
     public RoomAvailability() {
         syncWithDatabase();
     }
@@ -79,9 +85,8 @@ public class RoomAvailability {
 
     public int getOccupiedCount(LocalDate targetDate) {
         int count = 0;
-        String filePath = "C:\\Users\\Brieshen\\git\\ComprogFinalsRepository\\finals\\src\\finals\\DatabaseLogic\\HotelDatabase.txt";
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(hotelDbPath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.toLowerCase().contains("booking")) {
@@ -104,10 +109,9 @@ public class RoomAvailability {
     }
 
     public void syncWithHotelDatabase(String targetDateStr) {
-        String filePath = "C:\\Users\\Brieshen\\git\\ComprogFinalsRepository\\finals\\src\\finals\\DatabaseLogic\\HotelDatabase.txt";
         LocalDate targetDate = LocalDate.parse(targetDateStr);
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(hotelDbPath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] record = line.split("\\|"); 
@@ -122,13 +126,12 @@ public class RoomAvailability {
 
                             if (roomNumber >= 201 && roomNumber <= 602) {
                                 String paymentStatus = record[11].trim().toUpperCase(); 
-                                String newStatus = "OD"; // Default fallback status
+                                String newStatus = "OD"; 
 
-                                // --- FIXED STATUS SELECTOR LOGIC FOR DOWNPAYMENTS ---
                                 if (paymentStatus.equals("FULLY_PAID")) {
                                     newStatus = "OC"; 
                                 } else if (paymentStatus.equals("DOWNPAYMENT")) {
-                                    newStatus = "OR"; // Maps downpayment directly to Occupied/Reserved
+                                    newStatus = "OR"; 
                                 } else if (paymentStatus.equals("UNPAID")) {
                                     newStatus = "OD";
                                 }
@@ -186,7 +189,7 @@ public class RoomAvailability {
         if (code.equals("VD")) return "Vacant / Dirty";
         if (code.equals("OC")) return "Occupied / Clean";
         if (code.equals("OD")) return "Occupied / Dirty";
-        if (code.equals("OR")) return "Occupied / Reserved"; // Added description mapping logic here
+        if (code.equals("OR")) return "Occupied / Reserved"; 
         if (code.equals("OOS")) return "Out of Service";
         if (code.equals("OOO")) return "Out of Order";
         
