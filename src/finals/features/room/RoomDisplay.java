@@ -12,7 +12,6 @@ public class RoomDisplay {
         VD("[VD] Vacant/Dirty"),
         OC("[OC] Occupied/Clean"),
         OD("[OD] Occupied/Dirty"),
-        OR("[OR] Occupied/Reserved"),
         OOS("[OOS] Out of Service"),
         OOO("[OOO] Out of Order");
 
@@ -104,8 +103,12 @@ public class RoomDisplay {
                 String finalStatus = rawStatus; 
 
                 if (isBookingMode) {
-                    if (rawStatus.equals("S") || rawStatus.equals("VR") || rawStatus.equals("VD") || rawStatus.equals("OOS")) finalStatus = "A";
-                    else finalStatus = "X"; 
+                    if (rawStatus.equals("S") || rawStatus.equals("VR") || rawStatus.equals("VD") || 
+                        rawStatus.equals("OOS") || rawStatus.equalsIgnoreCase("INACTIVE")) {
+                        finalStatus = "A";
+                    } else {
+                        finalStatus = "X"; 
+                    }
                 }
                 
                 roomNumbersRow.append(formatCell(roomName, w));
@@ -126,25 +129,23 @@ public class RoomDisplay {
             currentRoomNumber += cols;
         }
 
+        // FIXED: RE-ENGINEERED 3-ABOVE 3-BELOW LEGEND ROW OUTPUT ENGINE
         if (!isBookingMode) {
             System.out.println("\t\t╠" + border + "╣");
             UIElement.printCenteredRow(" [ ROOM STATUS LEGEND ] ");
             System.out.println("\t\t╠" + border + "╣");
             
             StatusLegend[] values = StatusLegend.values();
-            StringBuilder row1 = new StringBuilder();
-            for (int i = 0; i < 4 && i < values.length; i++) {
-                row1.append(values[i].getLabel());
-                if (i < 3) row1.append("      ");
-            }
-            UIElement.printCenteredRow(row1.toString());
             
-            StringBuilder row2 = new StringBuilder();
-            for (int i = 4; i < values.length; i++) {
-                row2.append(values[i].getLabel());
-                if (i < values.length - 1) row2.append("      ");
-            }
-            UIElement.printCenteredRow(row2.toString());
+            // Row 1: VR, VD, OC
+            String row1String = String.format("                   %-30s %-30s %-30s", 
+                                              values[0].getLabel(), values[1].getLabel(), values[2].getLabel());
+            UIElement.printRow(row1String);
+            
+            // Row 2: OD, OOS, OOO
+            String row2String = String.format("                   %-30s %-30s %-30s", 
+                                              values[3].getLabel(), values[4].getLabel(), values[5].getLabel());
+            UIElement.printRow(row2String);
         }
         System.out.println("\t\t╚" + border + "╝");
     }

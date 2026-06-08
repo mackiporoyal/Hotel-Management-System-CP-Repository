@@ -124,9 +124,9 @@ public class RoomAvailability {
                                 if (paymentStatus.equals("FULLY_PAID")) {
                                     newStatus = "OC"; 
                                 } else if (paymentStatus.equals("DOWNPAYMENT")) {
-                                    newStatus = "OR"; 
+                                    newStatus = "OC"; 
                                 } else if (paymentStatus.equals("UNPAID")) {
-                                    newStatus = "OD";
+                                    newStatus = "VR";
                                 }
 
                                 if (roomNumber >= 201 && roomNumber <= 216) updateLocalRoomArray(roomsStandard, 201, roomNumber, newStatus);
@@ -181,8 +181,7 @@ public class RoomAvailability {
         if (code.equals("S") || code.equals("VR")) return "Vacant / Ready";
         if (code.equals("VD")) return "Vacant / Dirty";
         if (code.equals("OC")) return "Occupied / Clean";
-        if (code.equals("OD")) return "Occupied / Dirty";
-        if (code.equals("OR")) return "Occupied / Reserved"; 
+        if (code.equals("OD")) return "Occupied / Dirty"; 
         if (code.equals("OOS")) return "Out of Service";
         if (code.equals("OOO")) return "Out of Order";
         

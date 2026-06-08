@@ -2,9 +2,9 @@ package finals.features.booking;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-
+import finals.core.ui.UIElement;
+import finals.features.checkbooking.BookingManager;
 import finals.features.room.RoomController;
-
 import java.time.LocalDate;
 import java.time.YearMonth; 
 
@@ -34,14 +34,23 @@ public class NewBooking extends BookingManager {
     private int swimPasses;
     private int buffetPasses;
 
+    private static String liveSyncTimeIn = "";
+    private static String liveSyncTimeOut = "";
+
     private void printRow(String text) {
         int spaces = 120 - text.length();
         System.out.println("\t\t║" + text + " ".repeat(Math.max(0, spaces)) + "║");
     }
 
+    public static void updateStayDatesFromViewer(String newCheckIn, String newCheckOut) {
+        liveSyncTimeIn = newCheckIn;
+        liveSyncTimeOut = newCheckOut;
+    }
+
     public void setNewBooking() { 
         Scanner scan = new Scanner(System.in);
         String border = "═".repeat(120);
+        String thinBorder = "─".repeat(120);
 
         adultNames.clear();
         childNames.clear();
@@ -148,9 +157,11 @@ public class NewBooking extends BookingManager {
             }
         }
         
+        roomViewer.displayCalendar(yearIn, monthIn);
+
         while(true) {
             try {
-                System.out.print("\t\t          ► Enter Day   (DD)       : ");
+                System.out.print("\t\t          ► Select Day   (DD)      : ");
                 dayIn = scan.nextInt();
                 scan.nextLine(); 
                 
@@ -174,6 +185,7 @@ public class NewBooking extends BookingManager {
         }
     
         timeIn = String.format("%d-%02d-%02d", yearIn, monthIn, dayIn);
+        liveSyncTimeIn = timeIn; 
         
         // --- 3. CHECK-OUT DATES ---
         System.out.println("\n\t\t╔" + border + "╗");
@@ -220,9 +232,11 @@ public class NewBooking extends BookingManager {
             }
         }
         
+        roomViewer.displayCalendar(yearOut, monthOut);
+
         while(true) {
             try {
-                System.out.print("\t\t          ► Enter Day   (DD)       : ");
+                System.out.print("\t\t          ► Select Day   (DD)      : ");
                 dayOut = scan.nextInt();
                 scan.nextLine();
                 
@@ -245,6 +259,7 @@ public class NewBooking extends BookingManager {
             }
         }
         timeOut = String.format("%d-%02d-%02d", yearOut, monthOut, dayOut);
+        liveSyncTimeOut = timeOut; 
        
         // --- 4. GUEST NAMES ---
         System.out.println("\n\t\t╔" + border + "╗");
@@ -273,13 +288,35 @@ public class NewBooking extends BookingManager {
         System.out.println("\t\t╚" + border + "╝");
         
         // --- 5. LOGIC FOR ROOM AVAILABILITY ---
-        boolean proceedWithBooking = roomViewer.startMenu(true, timeIn); 
+        boolean proceedWithBooking = roomViewer.startMenu(true, liveSyncTimeIn); 
 
         if (!proceedWithBooking) {
             return;
         }
+
+        // FIXED DEFENSIVE FALLBACK GUARD: Only parse if sync data strings are populated properly
+        if (liveSyncTimeIn != null && !liveSyncTimeIn.isEmpty()) {
+            timeIn = liveSyncTimeIn;
+            String[] parsedDateParts = timeIn.split("-");
+            if (parsedDateParts.length == 3) {
+                yearIn = Integer.parseInt(parsedDateParts[0]);
+                monthIn = Integer.parseInt(parsedDateParts[1]);
+                dayIn = Integer.parseInt(parsedDateParts[2]);
+            }
+        }
+        
+        if (liveSyncTimeOut != null && !liveSyncTimeOut.isEmpty()) {
+            timeOut = liveSyncTimeOut;
+            String[] parsedOutParts = timeOut.split("-");
+            if (parsedOutParts.length == 3) {
+                yearOut = Integer.parseInt(parsedOutParts[0]);
+                monthOut = Integer.parseInt(parsedOutParts[1]);
+                dayOut = Integer.parseInt(parsedOutParts[2]);
+            }
+        }
+
         System.out.println("\n\t\t╔" + border + "╗");
-        printRow("      [ ROOM SELECTION CONTINUED ]");
+        printRow("      [ ROOM SELECTION CONTINUED - STAYS: " + timeIn + " TO " + timeOut + " ]");
         System.out.println("\t\t╚" + border + "╝");
 
         while(true) {
@@ -364,6 +401,41 @@ public class NewBooking extends BookingManager {
             }
         }
         if(buffetPasses == -1) return;
+        
+        // --- TRANSACT-LOCK VERIFICATION OVERVIEW GATEWAY ---
+        System.out.println("\n\t\t╔" + border + "╗");
+        UIElement.printCenteredRow("REGISTRATION SUMMARY - REVIEW ALL DETAILS CAREFULLY");
+        System.out.println("\t\t╠" + thinBorder + "╣");
+        UIElement.printRow(String.format("  ► CHECK IN DATE    : %-90s", timeIn));
+        UIElement.printRow(String.format("  ► CHECK OUT DATE  : %-90s", timeOut));
+        UIElement.printRow(String.format("  ► ALLOCATED ROOM  : Room %d (%s)", roomNumber, roomType));
+        UIElement.printRow(String.format("  ► REGISTERED HEADS: Adults: %d  │  Children: %d", totalAdult, totalChild));
+        UIElement.printRow(String.format("  ► PRIMARY OCCUPANT: %-90s", adultNames.get(0)));
+        UIElement.printRow(String.format("  ► ADD-ON PASSES   : Pool Pass Qty: %d  │  Buffet Pass Qty: %d", swimPasses, buffetPasses));
+        System.out.println("\t\t╠" + thinBorder + "╣");
+        UIElement.printCenteredRow("CONFIRM THAT ALL DETAILS ABOVE ARE CORRECT?");
+        UIElement.printRow("            [1] Yes");
+        UIElement.printRow("            [2] No");
+        System.out.println("\t\t╚" + border + "╝");
+        
+        int confirmBooking = 0;
+        while (true) {
+            try {
+                System.out.print("\t\t          ► Select Choice (1 or 2): ");
+                confirmBooking = scan.nextInt();
+                scan.nextLine(); 
+                if (confirmBooking == 1 || confirmBooking == 2) break;
+                System.out.println("\t\t            [!] Invalid input. Choose exactly 1 or 2.");
+            } catch (Exception e) {
+                System.out.println("\t\t            [!] Integer mismatch. Enter digits only.");
+                scan.nextLine();
+            }
+        }
+
+        if (confirmBooking == 2) {
+            System.out.println("\t\t            [Notice] Transaction aborted. Record completely discarded safely.");
+            return;
+        }
         
         // --- 7. SAVE TO DATABASE ---
         this.createBooking(timeIn, timeOut, roomType, roomNumber, adultNames, childNames, totalAdult, totalChild, swimPasses, buffetPasses);

@@ -29,7 +29,7 @@ public class RoomController {
         }
     }
 
-    private void displayCalendar(int year, int month) {
+    public void displayCalendar(int year, int month) {
         String border = UIElement.createBorder("═");
         YearMonth ym = YearMonth.of(year, month);
         String monthName = ym.getMonth().toString() + " " + year;
@@ -38,10 +38,7 @@ public class RoomController {
         UIElement.printCenteredRow(monthName);
         System.out.println("\t\t╠" + border + "╣");
         
-        // Use an explicit, fixed margin spacer string to lock the calendar block to the center
         String calendarLeftMargin = " ".repeat(39); 
-        
-        // Print the headers row using the explicit left margin structure
         String headerText = "SUN   MON   TUE   WED   THU   FRI   SAT";
         UIElement.printRow(calendarLeftMargin + headerText);
         UIElement.printRow(" ");
@@ -51,7 +48,6 @@ public class RoomController {
 
         StringBuilder weekRowBuilder = new StringBuilder();
         
-        // Append explicit empty cell blocks for the initial week day offset
         for (int i = 0; i < startDay; i++) {
             weekRowBuilder.append("      ");
         }
@@ -60,33 +56,33 @@ public class RoomController {
             LocalDate currentDate = ym.atDay(day);
             int bookedRooms = data.getOccupiedCount(currentDate);
             
-            // Format days cleanly into uniform 6-character column bounds
             String dayCellText = (bookedRooms >= 46) ? " X    " : String.format("%-2d    ", day);
             weekRowBuilder.append(dayCellText);
             
-            // Trigger row delivery if it's Saturday or the definitive final day of the month
             if ((startDay + day) % 7 == 0 || day == daysInMonth) {
-                // Construct the full string line, combining the hard margin prefix with the week data
                 String completeLineText = calendarLeftMargin + weekRowBuilder.toString();
                 UIElement.printRow(completeLineText);
-                
-                // Clear out the buffer string for the next week line
                 weekRowBuilder = new StringBuilder();
             }
         }
         System.out.println("\t\t╚" + border + "╝");
     }
 
-    public boolean startMenu(boolean isBookingMode) { return startMenu(isBookingMode, null); }
-
     public boolean startMenu(boolean isBookingMode, String targetDate) {
         Scanner scanner = new Scanner(System.in);
         String border = UIElement.createBorder("═");
 
-        if (targetDate == null || targetDate.isEmpty()) {
-            while (true) {
+        boolean selectingDate = true;
+        
+        while (selectingDate) {
+            // If date is null or empty, prompt the user natively to build the target string
+            if (targetDate == null || targetDate.isEmpty()) {
                 System.out.println("\n\t\t╔" + border + "╗");
-                UIElement.printCenteredRow(" [ DATE SELECTOR ] ");
+                if (isBookingMode) {
+                    UIElement.printCenteredRow(" [ CHANGE CHECK-IN DATE ] ");
+                } else {
+                    UIElement.printCenteredRow(" [ DATE SELECTOR ] ");
+                }
                 UIElement.printRow(" ");
                 System.out.println("\t\t╚" + border + "╝");
                 
@@ -102,54 +98,113 @@ public class RoomController {
                 if (day == -1) return false;
 
                 targetDate = String.format("%04d-%02d-%02d", year, month, day);
-                break; 
-            }
-        }
-
-        while (true) {
-            data.syncWithDatabase();
-            data.syncWithHotelDatabase(targetDate);
-            
-            System.out.println("\n\t\t╔" + border + "╗");
-            UIElement.printRow("ROOM AVAILABILITY");
-            System.out.println("\t\t╠" + border + "╣");
-            UIElement.printRow(" [ FLOOR SELECTION : " + targetDate + " ] ");
-            System.out.println("\t\t╠" + border + "╣");
-            UIElement.printRow("          [ 1 ] Change Date");
-            UIElement.printRow("          [ 2 ] 2nd Floor (Standard)");
-            UIElement.printRow("          [ 3 ] 3rd Floor (Deluxe)");
-            UIElement.printRow("          [ 4 ] 4th Floor (Junior Suite)");
-            UIElement.printRow("          [ 5 ] 5th Floor (Suite)");
-            UIElement.printRow("          [ 6 ] 6th Floor (Penthouse)");
-            UIElement.printRow("          [-1 ] Return to Main Menu");
-            System.out.println("\t\t╚" + border + "╝");
-            
-            int choice = getValidIntInput(scanner, "\t\t          ► Enter choice: ", -1, 6);
-
-            if (choice == -1) return false; 
-            else if (choice == 1) {
-                if (isBookingMode && targetDate != null && targetDate.length() > 0) {
-                    System.out.println("\t\t [!] You cannot change the date in New Booking mode.");
-                    continue;
+                
+                if (isBookingMode) {
+                    LocalDate checkInObj = LocalDate.parse(targetDate);
+                    String defaultCheckOut = checkInObj.plusDays(1).toString(); 
+                    finals.features.booking.NewBooking.updateStayDatesFromViewer(targetDate, defaultCheckOut);
                 }
-                break; 
             }
 
-            int navChoice = 0; 
-            switch (choice) {
-                case 2: navChoice = display.displayByFloor(RoomAvailability.Floors.SECOND, isBookingMode); break;
-                case 3: navChoice = display.displayByFloor(RoomAvailability.Floors.THIRD, isBookingMode); break;
-                case 4: navChoice = display.displayByFloor(RoomAvailability.Floors.FOURTH, isBookingMode); break;
-                case 5: navChoice = display.displayByFloor(RoomAvailability.Floors.FIFTH, isBookingMode); break;
-                case 6: navChoice = display.displayByFloor(RoomAvailability.Floors.SIXTH, isBookingMode); break;
-            }
+            while (true) {
+                data.syncWithDatabase();
+                data.syncWithHotelDatabase(targetDate);
+                
+                System.out.println("\n\t\t╔" + border + "╗");
+                UIElement.printRow("ROOM AVAILABILITY");
+                System.out.println("\t\t╠" + border + "╣");
+                UIElement.printRow(" [ FLOOR SELECTION : " + targetDate + " ] ");
+                System.out.println("\t\t╠" + border + "╣");
+                
+                if (isBookingMode) {
+                    UIElement.printRow("          [ 1 ] Change Check-In Date");
+                } else {
+                    UIElement.printRow("          [ 1 ] Change Date");
+                }
+                
+                UIElement.printRow("          [ 2 ] 2nd Floor (Standard)");
+                UIElement.printRow("          [ 3 ] 3rd Floor (Deluxe)");
+                UIElement.printRow("          [ 4 ] 4th Floor (Junior Suite)");
+                UIElement.printRow("          [ 5 ] 5th Floor (Suite)");
+                UIElement.printRow("          [ 6 ] 6th Floor (Penthouse)");
+                UIElement.printRow("          [-1 ] Return to Main Menu");
+                System.out.println("\t\t╚" + border + "╝");
+                
+                int choice = getValidIntInput(scanner, "\t\t          ► Enter choice: ", -1, 6);
 
-            if (isBookingMode) {
-                if (navChoice == 1) return true; 
-                else if (navChoice == -1) return false; 
-            } else {
-                if (navChoice == -1) return false; 
-                else if (navChoice >= 201) viewRoomDetails(navChoice);
+                if (choice == -1) {
+                    return false; 
+                } 
+                
+                // Double-date loop hook chaining
+                if (choice == 1) {
+                    if (isBookingMode) {
+                        System.out.println("\n\t\t╔" + border + "╗");
+                        UIElement.printCenteredRow(" [ CHANGE CHECK-IN DATE ] ");
+                        System.out.println("\t\t╚" + border + "╝");
+                        
+                        int yIn = getValidIntInput(scanner, "\t\t ► Enter New Check-In Year (YYYY) : ", 2024, 2100);
+                        if (yIn == -1) continue;
+                        int mIn = getValidIntInput(scanner, "\t\t ► Enter New Check-In Month (1-12): ", 1, 12);
+                        if (mIn == -1) continue;
+                        
+                        displayCalendar(yIn, mIn);
+                        
+                        int maxDaysIn = YearMonth.of(yIn, mIn).lengthOfMonth();
+                        int dIn = getValidIntInput(scanner, "\t\t ► Select New Check-In Day (1-" + maxDaysIn + ") : ", 1, maxDaysIn);
+                        if (dIn == -1) continue;
+
+                        String newCheckIn = String.format("%04d-%02d-%02d", yIn, mIn, dIn);
+
+                        System.out.println("\n\t\t╔" + border + "╗");
+                        UIElement.printCenteredRow(" [ ENTER NEW CHECK-OUT DATE ] ");
+                        System.out.println("\t\t╚" + border + "╝");
+                        
+                        int yOut, mOut, dOut;
+                        while (true) {
+                            yOut = getValidIntInput(scanner, "\t\t ► Enter New Check-Out Year (YYYY) : ", yIn, 2100);
+                            if (yOut < yIn) { System.out.println("\t\t   [!] Year cannot be before check-in."); continue; }
+                            break;
+                        }
+                        while (true) {
+                            mOut = getValidIntInput(scanner, "\t\t ► Enter New Check-Out Month (1-12): ", 1, 12);
+                            if (yOut == yIn && mOut < mIn) { System.out.println("\t\t   [!] Month cannot be before check-in."); continue; }
+                            break;
+                        }
+                        while (true) {
+                            int maxDaysOut = YearMonth.of(yOut, mOut).lengthOfMonth();
+                            dOut = getValidIntInput(scanner, "\t\t ► Select New Check-Out Day (1-" + maxDaysOut + ") : ", 1, maxDaysOut);
+                            if (yOut == yIn && mOut == mIn && dOut <= dIn) { System.out.println("\t\t   [!] Day must be after check-in."); continue; }
+                            break;
+                        }
+
+                        String newCheckOut = String.format("%04d-%02d-%02d", yOut, mOut, dOut);
+
+                        targetDate = newCheckIn; 
+                        finals.features.booking.NewBooking.updateStayDatesFromViewer(newCheckIn, newCheckOut);
+                        
+                    } else {
+                        targetDate = null;
+                    }
+                    break; 
+                }
+
+                int navChoice = 0; 
+                switch (choice) {
+                    case 2: navChoice = display.displayByFloor(RoomAvailability.Floors.SECOND, isBookingMode); break;
+                    case 3: navChoice = display.displayByFloor(RoomAvailability.Floors.THIRD, isBookingMode); break;
+                    case 4: navChoice = display.displayByFloor(RoomAvailability.Floors.FOURTH, isBookingMode); break;
+                    case 5: navChoice = display.displayByFloor(RoomAvailability.Floors.FIFTH, isBookingMode); break;
+                    case 6: navChoice = display.displayByFloor(RoomAvailability.Floors.SIXTH, isBookingMode); break;
+                }
+
+                if (isBookingMode) {
+                    if (navChoice == 1) return true; 
+                    else if (navChoice == -1) return false; 
+                } else {
+                    if (navChoice == -1) return false; 
+                    else if (navChoice >= 201) viewRoomDetails(navChoice);
+                }
             }
         }
         return false; 

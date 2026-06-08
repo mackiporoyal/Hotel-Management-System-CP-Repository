@@ -2,9 +2,9 @@ package finals.app;
 
 import java.util.Scanner;
 import finals.database.AccountManager; // Added import for authentication
-import finals.features.booking.BookingController;
 import finals.features.booking.NewBooking;
 import finals.features.cashier.CashierController;
+import finals.features.checkbooking.BookingController;
 import finals.features.room.RoomController;
 
 public class Main {
@@ -45,7 +45,7 @@ public class Main {
                     
                 case "3":
                     // Option 3: General Room Availability Viewer & Operations
-                    roomController.startMenu(false);
+                    roomController.startMenu(false, null);
                     break;
                     
                 case "4":

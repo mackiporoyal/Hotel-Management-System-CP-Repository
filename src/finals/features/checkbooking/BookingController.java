@@ -1,4 +1,4 @@
-package finals.features.booking;
+package finals.features.checkbooking;
 
 import java.util.List;
 import java.util.Scanner;
@@ -170,44 +170,7 @@ public class BookingController extends BookingManager {
     // FEATURE WORKFLOW 2: EDIT BOOKING MODULE
     // =========================================================================
     private void handleEditWorkflow() {
-        String border = UIElement.createBorder("═");
-        System.out.println("\n\t\t╔" + border + "╗");
-        UIElement.printCenteredRow("[ UPDATE RECORD TARGETING ]");
-        System.out.println("\t\t╠" + border + "╣");
-        UIElement.printRow("            [ 1 ] Locate Target Record using Booking ID");
-        UIElement.printRow("            [ 2 ] Locate Target Record using Guest Name");
-        System.out.println("\t\t╚" + border + "╝");
-        System.out.print("\t\t          ► Selection: ");
-        String subChoice = scan.nextLine().trim();
-
-        String targetId = null;
-        if (subChoice.equals("1")) {
-            System.out.print("\t\t          ► Target Booking ID: ");
-            targetId = scan.nextLine().trim();
-        } else if (subChoice.equals("2")) {
-            System.out.print("\t\t          ► Target Guest Name: ");
-            targetId = findSingleBookingIdByName(scan.nextLine().trim());
-        } else {
-            System.out.println("\t\t            [!] Operational mismatch.");
-            return;
-        }
-
-        if (targetId == null) return;
-
-        List<String[]> databaseLines = this.readAllLines();
-        for (String[] line : databaseLines) {
-            if (line[0].trim().equals(targetId)) {
-                System.out.println("\n\t\t            [ Match Found! Current Room: " + line[4] + " | Type: " + line[3] + " ]");
-                System.out.print("\t\t          ► Enter New Room Type: ");
-                line[3] = scan.nextLine().trim();
-                System.out.print("\t\t          ► Enter New Room Number Allocation: ");
-                line[4] = scan.nextLine().trim();
-                
-                this.overwriteDatabase(databaseLines); 
-                System.out.println("\t\t            [Success] Booking parameters updated successfully.");
-                return;
-            }
-        }
+        this.editBookingMenu();
     }
 
     // =========================================================================
@@ -216,10 +179,10 @@ public class BookingController extends BookingManager {
     private void handleDeleteWorkflow() {
         String border = UIElement.createBorder("═");
         System.out.println("\n\t\t╔" + border + "╗");
-        UIElement.printCenteredRow("[ RECORD REMOVAL WIZARD ]");
+        UIElement.printCenteredRow("[ DELETE BOOKING ]");
         System.out.println("\t\t╠" + border + "╣");
-        UIElement.printRow("            [ 1 ] Target and Purge by Booking ID");
-        UIElement.printRow("            [ 2 ] Target and Purge by Guest Name Lookups");
+        UIElement.printRow("            [ 1 ] Search and Delete by Booking ID");
+        UIElement.printRow("            [ 2 ] Search and Delete by Guest Name");
         System.out.println("\t\t╚" + border + "╝");
         System.out.print("\t\t          ► Selection: ");
         String subChoice = scan.nextLine().trim();
@@ -232,7 +195,7 @@ public class BookingController extends BookingManager {
             System.out.print("\t\t          ► Enter Name to Delete: ");
             targetId = findSingleBookingIdByName(scan.nextLine().trim());
         } else {
-            System.out.println("\t\t            [!] Operational mismatch.");
+            System.out.println("\t\t            [!] No match found.");
             return;
         }
 
