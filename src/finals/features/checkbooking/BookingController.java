@@ -222,7 +222,7 @@ public class BookingController extends BookingManager {
 
         // ADDED: Display the data being deleted
         System.out.println("\n\t\t╔" + border + "╗");
-        UIElement.printCenteredRow("CONFIRM DELETION");
+        UIElement.printCenteredRow("CONFIRM DELETION	");
         System.out.println("\t\t╠" + thinBorder + "╣");
         UIElement.printRow(String.format("  ► BOOKING ID : %s", targetData[0].trim()));
         UIElement.printRow(String.format("  ► GUEST NAME : %s", targetData[5].trim()));
