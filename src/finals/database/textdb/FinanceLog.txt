@@ -1,2 +1,3 @@
 2026-06-09|00001|00001|1|mackenzie|Standard|201|1560.0|3640.0|Swim:2/Buffet:2
 2026-06-09|00002|00003|1|nikki freeman|Standard|205|1155.0|2695.0|Swim:1/Buffet:1
+2026-06-09|00003|00003|1|nikki freeman|Standard|205|2695.0|0.0|Swim:1/Buffet:1

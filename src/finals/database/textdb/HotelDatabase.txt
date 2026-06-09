@@ -1,2 +1,2 @@
 00002|2026-06-09|2026-06-10|Standard|202|potato|carrot|1|1|1|2|UNPAID|INACTIVE
-00003|2026-07-01|2026-07-02|Standard|205|nikki freeman|baron bailey|1|1|1|1|DOWNPAYMENT|ACTIVE
+00003|2026-07-01|2026-07-02|Standard|205|nikki freeman|baron bailey|1|1|1|1|FULLY_PAID|CHECKED_OUT

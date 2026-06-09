@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 public class CashierController implements RoomPricing {
     
@@ -50,6 +51,13 @@ public class CashierController implements RoomPricing {
         return previousTotal;
     }
 
+    /**
+     * Utility method to print clean, standardized key-value metadata pairs
+     */
+    private void printStandardSummaryRow(String label, String value) {
+        UIElement.printRow(String.format("  %-14s: %-90s", label, value));
+    }
+
     public void displayCashierMenu() {
         Scanner sc = new Scanner(System.in);
         String border = UIElement.createBorder("═");
@@ -62,13 +70,23 @@ public class CashierController implements RoomPricing {
             UIElement.printRow("          [ 1 ] Process Folio / Payment");
             UIElement.printRow("          [ 2 ] View Pending Bookings (Unpaid/Downpayment/Partially Paid)");
             UIElement.printRow("          [ 3 ] Financial Dashboard");
+            UIElement.printRow("          [ 4 ] Process Guest Check-Out");
             UIElement.printRow("          [-1 ] Exit");
             UIElement.printRow(" ");
             System.out.println("\t\t╚" + border + "╝");
             System.out.print("\t\t          ► Choice: ");
             
-            int choice = sc.nextInt();
-            sc.nextLine(); 
+            int choice = 0;
+            
+            // ADDED: Try-catch block to prevent application crashes from bad scanner inputs
+            try {
+                choice = sc.nextInt();
+                sc.nextLine(); 
+            } catch (InputMismatchException e) {
+                System.out.println("\t\t          [!] Invalid input detected. Please enter a valid number.");
+                sc.nextLine(); // Clear the bad input from the buffer
+                continue;      // Restart the loop safely
+            }
             
             if (choice == -1) {
                 break;
@@ -85,6 +103,9 @@ public class CashierController implements RoomPricing {
                     break;
                 case 3: 
                     displayFinancialDashboard(); 
+                    break;
+                case 4:
+                    processCheckOut();
                     break;
                 default:
                     System.out.println("\t\t          Invalid option choice.");
@@ -134,17 +155,20 @@ public class CashierController implements RoomPricing {
                     UIElement.printCenteredRow("FOLIO BILLING STATEMENT & BREAKDOWN"); // REBRANDED
                     System.out.println("\t\t╠" + border + "╣");
                     UIElement.printRow(" ");
-                    UIElement.printRow(String.format("  Booking ID:    %-90s", bookingId));
-                    UIElement.printRow(String.format("  Guest Name:    %-90s", data[5].trim()));
-                    UIElement.printRow(String.format("  Room Type:     %-90s", roomTypeStr + " (Room " + data[4].trim() + ")"));
-                    UIElement.printRow(String.format("  Duration:      %-90s", nights + " Night(s)"));
+                    
+                    // Call unified text block layout definitions
+                    printStandardSummaryRow("Booking ID", bookingId);
+                    printStandardSummaryRow("Guest Name", data[5].trim());
+                    printStandardSummaryRow("Room Type", roomTypeStr + " (Room " + data[4].trim() + ")");
+                    printStandardSummaryRow("Duration", nights + " Night(s)");
+                    
                     UIElement.printRow(" ");
                     UIElement.printRow("  CHARGES LIST:");
                     UIElement.printRow(String.format("    ► Room Base Price:                           PHP %-50.2f", roomPrice));
                     UIElement.printRow(String.format("    ► Amenities (Swim Passes: %d, Buffet: %d):     PHP %-50.2f", swimPasses, buffetPasses, amenitiesTotal));
                     UIElement.printRow(" ");
                     System.out.println("\t\t╠" + border + "╣");
-                    UIElement.printRow(String.format("  TOTAL INITIAL INVOICE DUE:                     PHP %-50.2f", grandTotal));
+                    UIElement.printRow(String.format("  TOTAL INITIAL INVOICE DUE:                    PHP %-50.2f", grandTotal));
                     UIElement.printRow(String.format("  LESS PREVIOUS PAYMENT MADE:                    PHP %-50.2f", previousPaidAmount));
                     UIElement.printRow(String.format("  CURRENT OUTSTANDING FOLIO BALANCE:             PHP %-50.2f", currentRemainingBalance));
                     System.out.println("\t\t╚" + border + "╝");
@@ -231,6 +255,8 @@ public class CashierController implements RoomPricing {
                 }
             }
             System.out.println("\t\t          [!] ID Not Found.");
+        } catch (InputMismatchException e) {
+            System.out.println("\t\t          [!] Invalid input detected. Payment aborted safely.");
         } catch (Exception e) { 
             System.out.println("\t\t          [!] Error handling payment: " + e.getMessage()); 
         }
@@ -242,8 +268,8 @@ public class CashierController implements RoomPricing {
         UIElement.printCenteredRow("PENDING RESERVATION FOLIOS (UNPAID / DOWNPAYMENT / PARTIALLY PAID)");
         System.out.println("\t\t╠" + border + "╣");
         
-        String headerRow = String.format("  %-6s │ %-18s │ %-18s │ %-15s │ %-15s │ %-15s ", 
-                                         "ID", "Guest Name", "Room Details", "Rem. Balance", "Payment Status", "Monitor Status");
+        String headerRow = String.format("  %-12s │ %-18s │ %-22s │ %-15s │ %-15s │ %-15s ", 
+                                         "Booking ID", "Guest Name", "Room Type", "Rem. Balance", "Payment Status", "Monitor Status");
         UIElement.printRow(headerRow);
         System.out.println("\t\t╠" + border + "╣");
 
@@ -259,7 +285,7 @@ public class CashierController implements RoomPricing {
                     String roomNumStr = dataFields[4].trim();
                     
                     if (roomTypeStr.equals("1")) roomTypeStr = "Standard";
-                    String roomDetails = roomTypeStr + " - Rm " + roomNumStr;
+                    String roomDetails = roomTypeStr + " (Room " + roomNumStr + ")";
                     String payStatus = "[" + dataFields[11].trim() + "]";
                     String monitorStatus = "[" + dataFields[12].trim() + "]";
                     
@@ -281,10 +307,10 @@ public class CashierController implements RoomPricing {
                     String balanceFormatted = String.format("PHP %.2f", outstandingRemainingBalance);
 
                     if (guestName.length() > 18) guestName = guestName.substring(0, 15) + "...";
-                    if (roomDetails.length() > 18) roomDetails = roomDetails.substring(0, 15) + "...";
+                    if (roomDetails.length() > 22) roomDetails = roomDetails.substring(0, 19) + "...";
                     if (balanceFormatted.length() > 15) balanceFormatted = balanceFormatted.substring(0, 12) + "...";
                     
-                    String dataRow = String.format("  %-6s │ %-18s │ %-18s │ %-15s │ %-15s │ %-15s ", 
+                    String dataRow = String.format("  %-12s │ %-18s │ %-22s │ %-15s │ %-15s │ %-15s ", 
                                                    id, guestName, roomDetails, balanceFormatted, payStatus, monitorStatus);
                     UIElement.printRow(dataRow);
                 }
@@ -293,6 +319,81 @@ public class CashierController implements RoomPricing {
             UIElement.printRow("Error reading text database lines."); 
         }
         System.out.println("\t\t╚" + border + "╝");
+    }
+
+    public void processCheckOut() {
+        String border = UIElement.createBorder("═");
+        System.out.println("\n\t\t╔" + border + "╗");
+        UIElement.printCenteredRow("GUEST CHECK-OUT PROCESSING");
+        System.out.println("\t\t╠" + border + "╣");
+
+        String headerRow = String.format("  %-12s │ %-18s │ %-22s │ %-15s │ %-15s │ %-15s ", 
+                                         "Booking ID", "Guest Name", "Room Type", "Rem. Balance", "Payment Status", "Monitor Status");
+        UIElement.printRow(headerRow);
+        System.out.println("\t\t╠" + border + "╣");
+
+        boolean hasFullyPaid = false;
+
+        try {
+            List<String> databaseLines = Files.readAllLines(Paths.get(HOTEL_DB_PATH));
+            for (String line : databaseLines) {
+                if (line.contains("FULLY_PAID") && line.contains("ACTIVE")) {
+                    hasFullyPaid = true;
+                    String[] dataFields = line.split("\\|");
+                    
+                    String id = dataFields[0].trim();
+                    String guestName = dataFields[5].trim();
+                    String roomTypeStr = dataFields[3].trim();
+                    String roomNumStr = dataFields[4].trim();
+                    
+                    if (roomTypeStr.equals("1")) roomTypeStr = "Standard";
+                    String roomDetails = roomTypeStr + " (Room " + roomNumStr + ")";
+                    String payStatus = "[" + dataFields[11].trim() + "]";
+                    String monitorStatus = "[" + dataFields[12].trim() + "]";
+                    
+                    String balanceFormatted = "PHP 0.00";
+
+                    if (guestName.length() > 18) guestName = guestName.substring(0, 15) + "...";
+                    if (roomDetails.length() > 22) roomDetails = roomDetails.substring(0, 19) + "...";
+                    
+                    String dataRow = String.format("  %-12s │ %-18s │ %-22s │ %-15s │ %-15s │ %-15s ", 
+                                                   id, guestName, roomDetails, balanceFormatted, payStatus, monitorStatus);
+                    UIElement.printRow(dataRow);
+                }
+            }
+            System.out.println("\t\t╚" + border + "╝");
+
+            if (!hasFullyPaid) {
+                System.out.println("\t\t          [Notice] No fully paid active bookings available for check-out.");
+                return;
+            }
+
+            Scanner sc = new Scanner(System.in);
+            System.out.print("\n\t\t          ► Enter Booking ID to Check-Out (or -1 to cancel): ");
+            String targetId = sc.nextLine().trim();
+
+            if (targetId.equals("-1")) return;
+
+            boolean found = false;
+            for (int i = 0; i < databaseLines.size(); i++) {
+                String[] data = databaseLines.get(i).split("\\|");
+                if (data[0].trim().equalsIgnoreCase(targetId) && data[11].trim().equalsIgnoreCase("FULLY_PAID") && data[12].trim().equalsIgnoreCase("ACTIVE")) {
+                    data[12] = "CHECKED_OUT"; 
+                    databaseLines.set(i, String.join("|", data));
+                    Files.write(Paths.get(HOTEL_DB_PATH), databaseLines);
+                    System.out.println("\t\t          [Success] Booking " + targetId + " checked out. Room " + data[4].trim() + " is now released to [VR].");
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                System.out.println("\t\t          [!] Booking ID not found or not eligible for check-out (must be FULLY_PAID and ACTIVE).");
+            }
+
+        } catch (IOException e) {
+            System.out.println("\t\t          [!] Error processing check-out: " + e.getMessage());
+        }
     }
 
     private void logTransaction(String transId, String bookingId, int nights, String guestName, String roomType, String roomNum, double paidNow, double remBalance, String amenities) {
@@ -324,8 +425,17 @@ public class CashierController implements RoomPricing {
         UIElement.printRow(" ");
         System.out.println("\t\t╚" + border + "╝");
         System.out.print("\t\t          ► Choice: ");
-        int viewType = sc.nextInt();
-        sc.nextLine(); 
+        
+        int viewType = 6;
+        
+        // ADDED: Try-catch block for numerical dashboard inputs
+        try {
+            viewType = sc.nextInt();
+            sc.nextLine(); 
+        } catch (InputMismatchException e) {
+            System.out.println("\t\t          [!] Invalid input. Defaulting to View All-Time History [ 6 ].");
+            sc.nextLine(); // Clear buffer
+        }
         
         LocalDate today = LocalDate.now();
         double totalRevenue = 0.0;
@@ -334,8 +444,8 @@ public class CashierController implements RoomPricing {
         UIElement.printCenteredRow("[ REVENUE AUDIT REPORT ]");
         System.out.println("\t\t╠" + border + "╣");
         
-        String headers = String.format(" %-10s │ %-6s │ %-6s │ %-15s │ %-10s │ %-3s │ %-13s │ %-13s │ %-18s ", 
-                         "Date", "ID", "Nights", "Guest Name", "Room Type", "Rm#", "Paid Now", "Rem. Balance", "Pass: Swim/Buffet");
+        String headers = String.format(" %-10s │ %-12s │ %-10s │ %-15s │ %-22s │ %-13s │ %-13s │ %-18s ", 
+                         "Date", "Booking ID", "Duration", "Guest Name", "Room Type", "Paid Now", "Rem. Balance", "Pass: Swim/Buffet");
         UIElement.printRow(headers);
         System.out.println("\t\t╠" + border + "╣");
 
@@ -347,7 +457,7 @@ public class CashierController implements RoomPricing {
                 
                 LocalDate logDate = LocalDate.parse(data[0].trim());
                 String bookingId = data[2].trim();
-                String nightsStr = data[3].trim() + " Nts";
+                String nightsStr = data[3].trim() + " Night(s)";
                 String guestName = data[4].trim();
                 String roomType = data[5].trim();
                 String roomNum = data[6].trim();
@@ -372,13 +482,14 @@ public class CashierController implements RoomPricing {
                 if (showRecord) {
                     String paidNowStr = String.format("PHP %.0f", amountPaidNow);
                     String remBalanceStr = String.format("PHP %.0f", snapshotRemainingBalance);
+                    String fullRoomDetails = roomType + " (Room " + roomNum + ")";
 
                     if (guestName.length() > 15) guestName = guestName.substring(0, 12) + "...";
-                    if (roomType.length() > 10) roomType = roomType.substring(0, 7) + "...";
+                    if (fullRoomDetails.length() > 22) fullRoomDetails = fullRoomDetails.substring(0, 19) + "...";
                     if (amenitiesInfo.length() > 18) amenitiesInfo = amenitiesInfo.substring(0, 15) + "...";
 
-                    String rowContent = String.format(" %-10s │ %-6s │ %-6s │ %-15s │ %-10s │ %-3s │ %-13s │ %-13s │ %-18s ", 
-                                        data[0].trim(), bookingId, nightsStr, guestName, roomType, roomNum, paidNowStr, remBalanceStr, amenitiesInfo);
+                    String rowContent = String.format(" %-10s │ %-12s │ %-10s │ %-15s │ %-22s │ %-13s │ %-13s │ %-18s ", 
+                                        data[0].trim(), bookingId, nightsStr, guestName, fullRoomDetails, paidNowStr, remBalanceStr, amenitiesInfo);
                     UIElement.printRow(rowContent);
                     
                     totalRevenue += amountPaidNow;

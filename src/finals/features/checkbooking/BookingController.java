@@ -90,7 +90,7 @@ public class BookingController extends BookingManager {
             if (isMatch) {
                 matchFound = true;
                 System.out.println("\n\t\t╔" + border + "╗");
-                UIElement.printRow(String.format(" GUEST BOOKING DETAILS                                                  ID: %-12s", row[0].trim()));
+                UIElement.printRow(String.format(" GUEST BOOKING DETAILS                                                   ID: %-12s", row[0].trim()));
                 System.out.println("\t\t╠" + thinBorder + "╣");
                 UIElement.printRow(String.format("  ► CHECK-IN DURATION : %s  to  %s", row[1].trim(), row[2].trim()));
                 UIElement.printRow(String.format("  ► ALLOCATED ROOM    : Room %s (%s)", row[4].trim(), row[3].trim()));
@@ -178,6 +178,8 @@ public class BookingController extends BookingManager {
     // =========================================================================
     private void handleDeleteWorkflow() {
         String border = UIElement.createBorder("═");
+        String thinBorder = UIElement.createBorder("─");
+        
         System.out.println("\n\t\t╔" + border + "╗");
         UIElement.printCenteredRow("[ DELETE BOOKING ]");
         System.out.println("\t\t╠" + border + "╣");
@@ -202,22 +204,49 @@ public class BookingController extends BookingManager {
         if (targetId == null) return;
 
         List<String[]> databaseLines = this.readAllLines();
-        boolean purged = false;
+        int recordIndex = -1;
+        String[] targetData = null;
         
-        for (int i = databaseLines.size() - 1; i >= 0; i--) {
+        for (int i = 0; i < databaseLines.size(); i++) {
             if (databaseLines.get(i)[0].trim().equals(targetId)) {
-                databaseLines.remove(i);
-                purged = true;
+                recordIndex = i;
+                targetData = databaseLines.get(i);
                 break;
             }
         }
 
-        if (purged) {
-            this.overwriteDatabase(databaseLines); 
-            System.out.println("\t\t            [Success] Booking ID " + targetId + " deleted from file systems.");
-        } else {
+        if (recordIndex == -1 || targetData == null) {
             System.out.println("\t\t            [!] Critical Error: Index tracking pointer mapping mismatch.");
+            return;
         }
+
+        // ADDED: Display the data being deleted
+        System.out.println("\n\t\t╔" + border + "╗");
+        UIElement.printCenteredRow("CONFIRM DELETION");
+        System.out.println("\t\t╠" + thinBorder + "╣");
+        UIElement.printRow(String.format("  ► BOOKING ID : %s", targetData[0].trim()));
+        UIElement.printRow(String.format("  ► GUEST NAME : %s", targetData[5].trim()));
+        UIElement.printRow(String.format("  ► ROOM       : %s (Room %s)", targetData[3].trim(), targetData[4].trim()));
+        UIElement.printRow(String.format("  ► DATES      : %s to %s", targetData[1].trim(), targetData[2].trim()));
+        UIElement.printRow(String.format("  ► STATUS     : %s [%s]", targetData[11].trim(), targetData[12].trim()));
+        System.out.println("\t\t╠" + thinBorder + "╣");
+        UIElement.printRow("  [!] WARNING: This process cannot be reversed.");
+        UIElement.printRow(" ");
+        UIElement.printRow("            [ 1 ] Yes, Delete Record Permanently");
+        UIElement.printRow("            [ 2 ] No, Cancel Operation");
+        System.out.println("\t\t╚" + border + "╝");
+        System.out.print("\t\t          ► Option Choice: ");
+        
+        String confirmationChoice = scan.nextLine().trim();
+
+        if (!confirmationChoice.equals("1")) {
+            System.out.println("\t\t            [Notice] Deletion cancelled. File system unchanged.");
+            return;
+        }
+
+        databaseLines.remove(recordIndex);
+        this.overwriteDatabase(databaseLines); 
+        System.out.println("\t\t            [Success] Booking ID " + targetId + " deleted from file systems.");
     }
 
     private String findSingleBookingIdByName(String searchName) {
