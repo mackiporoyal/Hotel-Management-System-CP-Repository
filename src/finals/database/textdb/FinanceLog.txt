@@ -1,3 +1,9 @@
 2026-06-09|00001|00001|1|mackenzie|Standard|201|1560.0|3640.0|Swim:2/Buffet:2
 2026-06-09|00002|00003|1|nikki freeman|Standard|205|1155.0|2695.0|Swim:1/Buffet:1
 2026-06-09|00003|00003|1|nikki freeman|Standard|205|2695.0|0.0|Swim:1/Buffet:1
+2026-06-09|00004|00002|1|potato|Standard|202|4700.0|0.0|Swim:1/Buffet:2
+2026-06-09|00005|00004|1|Brieshen Saes|Standard|212|1305.0|3045.0|Swim:2/Buffet:1
+2026-06-09|00006|00005|3|Charles Bernardo, Raiza antonrth|Deluxe|312|5265.0|12285.0|Swim:3/Buffet:3
+2026-06-09|00007|00008|1|Raya Stella Calayag|Suite|501|4665.0|10885.0|Swim:2/Buffet:3
+2026-06-10|00008|00008|1|Raya Stella Calayag|Suite|501|10885.0|0.0|Swim:2/Buffet:3
+2026-06-10|00009|00009|16|raya|Standard|201|42700.0|0.0|Swim:2/Buffet:2

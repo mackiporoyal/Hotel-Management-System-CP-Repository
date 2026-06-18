@@ -444,8 +444,9 @@ public class CashierController implements RoomPricing {
         UIElement.printCenteredRow("[ REVENUE AUDIT REPORT ]");
         System.out.println("\t\t╠" + border + "╣");
         
-        String headers = String.format(" %-10s │ %-12s │ %-10s │ %-15s │ %-22s │ %-13s │ %-13s │ %-18s ", 
-                         "Date", "Booking ID", "Duration", "Guest Name", "Room Type", "Paid Now", "Rem. Balance", "Pass: Swim/Buffet");
+        // FIXED ALIGNMENT: Reduced sub-column layout block widths to mathematically equal exactly 114 visible padding blocks + pipes
+        String headers = String.format(" %-10s │ %-5s │ %-10s │ %-15s │ %-19s │ %-12s │ %-12s │ %-15s", 
+                         "Date", "ID", "Duration", "Guest Name", "Room Type", "Paid Now", "Rem. Balance", "Amenities Pass");
         UIElement.printRow(headers);
         System.out.println("\t\t╠" + border + "╣");
 
@@ -484,11 +485,17 @@ public class CashierController implements RoomPricing {
                     String remBalanceStr = String.format("PHP %.0f", snapshotRemainingBalance);
                     String fullRoomDetails = roomType + " (Room " + roomNum + ")";
 
+                    // Truncating safely inside the newly optimized cell limits
+                    if (bookingId.length() > 5) bookingId = bookingId.substring(0, 5);
+                    if (nightsStr.length() > 10) nightsStr = nightsStr.substring(0, 10);
                     if (guestName.length() > 15) guestName = guestName.substring(0, 12) + "...";
-                    if (fullRoomDetails.length() > 22) fullRoomDetails = fullRoomDetails.substring(0, 19) + "...";
-                    if (amenitiesInfo.length() > 18) amenitiesInfo = amenitiesInfo.substring(0, 15) + "...";
+                    if (fullRoomDetails.length() > 20) fullRoomDetails = fullRoomDetails.substring(0, 17) + "...";
+                    if (paidNowStr.length() > 12) paidNowStr = paidNowStr.substring(0, 12);
+                    if (remBalanceStr.length() > 12) remBalanceStr = remBalanceStr.substring(0, 12);
+                    if (amenitiesInfo.length() > 15) amenitiesInfo = amenitiesInfo.substring(0, 12) + "...";
 
-                    String rowContent = String.format(" %-10s │ %-12s │ %-10s │ %-15s │ %-22s │ %-13s │ %-13s │ %-18s ", 
+                    // FIXED ALIGNMENT: Row formatter uses the exact same sub-width tracking limits as the headers block above
+                    String rowContent = String.format(" %-10s │ %-5s │ %-10s │ %-15s │ %-19s │ %-12s │ %-12s │ %-15s", 
                                         data[0].trim(), bookingId, nightsStr, guestName, fullRoomDetails, paidNowStr, remBalanceStr, amenitiesInfo);
                     UIElement.printRow(rowContent);
                     
@@ -500,7 +507,7 @@ public class CashierController implements RoomPricing {
         }
 
         System.out.println("\t\t╠" + border + "╣");
-        UIElement.printRow(String.format("          TOTAL COMBINED REVENUE COLLECTED : PHP %-50.2f", totalRevenue));
+        UIElement.printRow(String.format("  TOTAL COMBINED REVENUE COLLECTED : PHP %-50.2f", totalRevenue));
         System.out.println("\t\t╚" + border + "╝");
         System.out.print("\t\t          ► Press ENTER to return to Dashboard...");
         sc.nextLine();
